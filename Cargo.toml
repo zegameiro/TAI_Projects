@@ -3,5 +3,9 @@ name = "tai_first_proj"
 version = "0.1.0"
 edition = "2021"
 
+[lib]
+name = "tai_first_project"
+path = "src/lib.rs"
+
 [dependencies]
 argparse = "0.2.2"
