@@ -1,2 +1,2 @@
 pub mod file_reader;
-pub mod fcm;
+pub mod finite_context_model;

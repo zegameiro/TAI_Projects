@@ -7,8 +7,8 @@ use std::collections::HashMap;
 pub struct FiniteContextModel {
     k: usize,                                       // context length (Order of the Markov model)
     alpha: f64,                                     // smoothing factor to avoid zero probabilities
-    counts: HashMap<String, HashMap<char, usize>>,  // nested hashmap to store symbol occurences based on context
-
+    current_context: String,                        // current context being processed
+    counts: HashMap<String, HashMap<char, usize>>,
         // The outer hashmap maps a context or a substring of length k to the inner hashmap
         // The inner hashmap counts the occurences of characters appearing after the context
 }
@@ -19,6 +19,7 @@ impl FiniteContextModel {
         Self {
             k,
             alpha,
+            current_context: String::new(),
             counts: HashMap::new(),
         }
     }
@@ -28,14 +29,18 @@ impl FiniteContextModel {
      * the frequency table for context-symbol
      * occurrences
     */
-    pub fn train(&mut self, text: &str) {
-        for i in 0..text.len().saturating_sub(self.k) { // Avoid overflow until k
-            let context: &str = &text[i..i + self.k];
-            let next_char: char = text.chars().nth(i + self.k).unwrap_or('\0');
+    pub fn train_char(&mut self, current_char: char) {
+        
+        self.current_context.push(current_char);
 
-            let entry: &mut HashMap<char, usize> = self.counts.entry(context.to_string()).or_insert_with(HashMap::new);
-            *entry.entry(next_char).or_insert(0) += 1;
+        if self.current_context.len() < self.k {
+            return;
         }
+
+        let entry: &mut HashMap<char, usize> = self.counts.entry(self.current_context.clone()).or_insert_with(HashMap::new);
+        *entry.entry(current_char).or_insert(0) += 1;
+
+        self.current_context = self.current_context[1..].to_string();
     }
 
     /*
