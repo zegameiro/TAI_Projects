@@ -17,3 +17,11 @@ pub fn read_byte(file_reader: &mut FileReader, buff: &mut [u8; 1]) -> io::Result
     }
     Ok(false) // No reader available
 }
+
+pub fn read_buff(file_reader: &mut FileReader, buff: &mut [u8]) -> io::Result<usize> {
+    if let Some(reader) = file_reader.reader.as_mut() {
+        let bytes_read = reader.read(buff)?;
+        return Ok(bytes_read);
+    }
+    Ok(0) // No reader available
+}
