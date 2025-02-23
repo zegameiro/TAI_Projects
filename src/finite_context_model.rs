@@ -7,7 +7,8 @@ use std::collections::HashMap;
 pub struct FiniteContextModel {
     k: usize,                                       // context length (Order of the Markov model)
     alpha: f64,                                     // smoothing factor to avoid zero probabilities
-    current_context: String,                        // current context being processed
+    current_context: String,                     
+    symbols: Vec<char>,                           
     counts: HashMap<String, HashMap<char, usize>>,
         // The outer hashmap maps a context or a substring of length k to the inner hashmap
         // The inner hashmap counts the occurences of characters appearing after the context
@@ -20,6 +21,7 @@ impl FiniteContextModel {
             k,
             alpha,
             current_context: String::new(),
+            symbols: Vec::new(),
             counts: HashMap::new(),
         }
     }
@@ -30,6 +32,10 @@ impl FiniteContextModel {
      * occurrences
     */
     pub fn train_char(&mut self, current_char: char) {
+
+        if !self.symbols.contains(&current_char) {
+            self.symbols.push(current_char);
+        }
         
         self.current_context.push(current_char);
 
@@ -54,7 +60,7 @@ impl FiniteContextModel {
         let symbol_count: f64 = *symbol_counts.get(&symbol).unwrap_or(&0) as f64;
         let total_count: f64 = symbol_counts.values().sum::<usize>() as f64;
 
-        (symbol_count + self.alpha) / (total_count + self.alpha * 256.0)
+        (symbol_count + self.alpha) / (total_count + self.alpha * 256 as f64)
     }
 
     /*
@@ -68,9 +74,10 @@ impl FiniteContextModel {
             let context = &text[i..i + self.k];
             let next_char = text.chars().nth(i + self.k).unwrap_or('\0');
             let probability = self.compute_probability(context, next_char);
-            total_info += -probability.log2();
+            println!("{}: {}, log2 {}", context, probability, probability.log2());
+            total_info += -(probability * probability.log2());
         }
-
-        total_info / text.len() as f64
+        println!("Total info: {}", total_info);
+        total_info
     }
 }
