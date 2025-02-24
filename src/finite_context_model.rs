@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use rand::Rng;
 
 /*
  * Defines the finite-context model structure,
@@ -32,22 +33,25 @@ impl FiniteContextModel {
      * occurrences
     */
     pub fn train_char(&mut self, current_char: char) {
-
         if !self.symbols.contains(&current_char) {
             self.symbols.push(current_char);
         }
-        
-        self.current_context.push(current_char);
-
-        if self.current_context.len() < self.k {
-            return;
+    
+        if self.current_context.len() == self.k {
+            let context = self.current_context.clone();
+            
+            // Insert the count into the HashMap
+            let entry = self.counts.entry(context).or_insert_with(HashMap::new);
+            *entry.entry(current_char).or_insert(0) += 1;
+            
+            // Slide the context window (remove the first char)
+            self.current_context.remove(0);
         }
-
-        let entry: &mut HashMap<char, usize> = self.counts.entry(self.current_context.clone()).or_insert_with(HashMap::new);
-        *entry.entry(current_char).or_insert(0) += 1;
-
-        self.current_context = self.current_context[1..].to_string();
+    
+        // Append the new character to the context
+        self.current_context.push(current_char);
     }
+    
 
     /*
      * Computes the smoothed probability 
@@ -74,10 +78,40 @@ impl FiniteContextModel {
             let context = &text[i..i + self.k];
             let next_char = text.chars().nth(i + self.k).unwrap_or('\0');
             let probability = self.compute_probability(context, next_char);
-            println!("{}: {}, log2 {}", context, probability, probability.log2());
-            total_info += -(probability * probability.log2());
+            total_info += -probability.log2();
         }
-        println!("Total info: {}", total_info);
         total_info
+    }
+
+    /*
+     * Samples a character based on stored probabilities
+     * with frozen counts
+    */
+    pub fn sample_next_char(&self, context: &str) -> char {
+        let mut rng = rand::rng(); // Random number generator
+        let binding: HashMap<char, usize> = HashMap::new();
+        let symbol_counts = self.counts.get(context).unwrap_or(&binding);
+
+        let total_count: f64 = symbol_counts.values().sum::<usize>() as f64;
+
+        if total_count == 0.0 {
+            return ' '; // default fallback
+        }
+
+        let mut cumulative_probability = 0.0;
+        let threshold = rng.random::<f64>();
+
+        for (&symbol, &count) in symbol_counts {
+            cumulative_probability += (count as f64) / total_count;
+            if threshold <= cumulative_probability {
+                return symbol;
+            }
+        }
+
+        ' ' // Fallback
+    }
+
+    pub fn get_k(&self) -> usize {
+        self.k
     }
 }

@@ -20,11 +20,11 @@ fn main() {
 
         // Size of the sliding window - k
         argument_parser.refer(&mut k_value)
-            .add_option(&["--k"], Store, "Size of the sliding window");
+            .add_option(&["-k"], Store, "Size of the sliding window");
 
         // Smoothing parameter - alpha
         argument_parser.refer(&mut alpha)
-            .add_option(&["--a"], Store, "Smoothing parameter");
+            .add_option(&["-a"], Store, "Smoothing parameter");
 
         argument_parser.parse_args_or_exit();
     }
