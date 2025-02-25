@@ -39,7 +39,7 @@ impl FiniteContextModel {
             self.symbols.push(current_char);
         }
     
-        if self.current_context.len() == self.k {
+        if self.current_context.len() >= self.k {
             let context = self.current_context.clone();
             
             // Insert the count into the HashMap
@@ -76,14 +76,18 @@ impl FiniteContextModel {
     */
     pub fn calculate_information_content(&self, text: &str) -> f64 {
         let mut total_info = 0.0;
-        for i in 0..text.len().saturating_sub(self.k) {
-            let context = &text[i..i + self.k];
-            let next_char = text.chars().nth(i + self.k).unwrap_or('\0');
-            let probability = self.compute_probability(context, next_char);
+        let chars: Vec<char> = text.chars().collect();
+    
+        for i in 0..chars.len().saturating_sub(self.k) {
+            let context: String = chars[i..i + self.k].iter().collect(); 
+            let next_char = chars.get(i + self.k).copied().unwrap_or('\0');
+            let probability = self.compute_probability(&context, next_char);
             total_info += -probability.log2();
         }
+    
         total_info
     }
+    
 
     /*
      * Samples a character based on stored probabilities
