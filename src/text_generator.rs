@@ -4,7 +4,14 @@ extern crate rand;
 
 pub fn generate_text(model: &FiniteContextModel, seed: &str, length: usize) -> String {
     let mut generated_text = String::from(seed);
-    let mut context = String::from(seed);
+    let len = seed.len();
+    let mut context: String;
+    let k = model.get_k();
+    if len < k {
+        context = seed.to_string(); // Return the whole string if it's too short
+    } else {
+        context = seed[len - k..].to_string(); // Slice the last two characters
+    }
 
     for _ in 0..length {
         let next_char = model.sample_next_char(&context);

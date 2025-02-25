@@ -1,10 +1,12 @@
 use std::collections::HashMap;
 use rand::Rng;
+use serde::{Deserialize, Serialize};
 
 /*
  * Defines the finite-context model structure,
  * storing model parameters and frequency counts
 */
+#[derive(Serialize,Deserialize)]
 pub struct FiniteContextModel {
     k: usize,                                       // context length (Order of the Markov model)
     alpha: f64,                                     // smoothing factor to avoid zero probabilities
