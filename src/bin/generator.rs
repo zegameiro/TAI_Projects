@@ -1,7 +1,7 @@
 extern crate argparse;
 extern crate rand;
-
-use tai_first_project::{finite_context_model::FiniteContextModel, model_saver_loader::load_model, text_generator, *};
+use std::collections::HashMap;
+use tai_first_project::{file_reader::FileReader, finite_context_model::FiniteContextModel, text_generator, *};
 use argparse::{ArgumentParser, Store};
 
 fn main() {
@@ -39,7 +39,49 @@ fn main() {
         argument_parser.parse_args_or_exit();
     }
 
-    let mut file_reader_struct = file_reader::FileReader{
+    // Vector of models
+    let mut models: HashMap<usize, FiniteContextModel> = HashMap::new();
+
+    for k in {
+        if k_value > prior.len(){
+            vec![k_value,prior.len()]
+        }else {
+            vec![k_value]
+        }
+    }{
+        let mut model = FiniteContextModel::new(k, alpha);
+        let mut file_reader_struct = open_new_file(file_path.clone());
+    
+        println!("Training model with k {}",k);
+        loop {
+            match file_reader::read_char(&mut file_reader_struct) {
+                Ok(Some(char)) => {
+                    model.train_char(char);
+                }
+                Ok(None) => break,
+                Err(e) => {
+                    eprintln!("Error reading file: {}", e);
+                    break;
+                }
+            }
+        }
+        models.insert(k, model);
+    }
+    // if prior.len() > k_value {
+    //     eprint!("Prior sequence length must be less than or equal to k");
+    //     return;
+    // }
+
+    println!("Model created successfully\nGenerating text...");
+    let generated_text = text_generator::generate_text(models, &prior, sequence_length,k_value);
+    println!("Generated Text:\n{}", generated_text);
+
+}
+
+
+
+fn open_new_file(file_path: String) -> FileReader{
+    let mut file_reader_struct = FileReader{
         filename:String::from(file_path),
         reader:Option::None,
         buffer:String::new(),
@@ -47,34 +89,7 @@ fn main() {
 
     if !file_reader::open_file(&mut file_reader_struct).is_ok(){
         println!("error ReadingFile");
-        return;
     }
 
-    let mut model = FiniteContextModel::new(k_value, alpha);
-
-    println!("Training model...");
-
-    loop {
-        match file_reader::read_char(&mut file_reader_struct) {
-            Ok(Some(char)) => {
-                model.train_char(char);
-            }
-            Ok(None) => break,
-            Err(e) => {
-                eprintln!("Error reading file: {}", e);
-                break;
-            }
-        }
-    }
-
-
-    // if prior.len() > k_value {
-    //     eprint!("Prior sequence length must be less than or equal to k");
-    //     return;
-    // }
-
-    println!("Model created successfully\nGenerating text...");
-    let generated_text = text_generator::generate_text(&model, &prior, sequence_length);
-    println!("Generated Text:\n{}", generated_text);
-
+    file_reader_struct
 }

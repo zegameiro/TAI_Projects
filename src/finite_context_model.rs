@@ -12,7 +12,7 @@ pub struct FiniteContextModel {
     alpha: f64,                                     // smoothing factor to avoid zero probabilities
     current_context: String,                     
     symbols: Vec<char>,                           
-    counts: HashMap<String, HashMap<char, usize>>,
+    pub counts: HashMap<String, HashMap<char, usize>>,
         // The outer hashmap maps a context or a substring of length k to the inner hashmap
         // The inner hashmap counts the occurences of characters appearing after the context
 }
