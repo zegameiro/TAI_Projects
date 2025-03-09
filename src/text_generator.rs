@@ -28,6 +28,8 @@ pub fn generate_text(models: HashMap<usize, FiniteContextModel>, seed: &str, len
         if generated_text.len() == original_k{
             model = models.get(&original_k).unwrap();
             println!("Changed to model {}",model.get_k());
+            context = generated_text[generated_text.len() - model.get_k()..].to_string();
+            println!("context length is {}", context.len());
         }
         context.push(next_char);
 
@@ -58,15 +60,19 @@ pub fn generate_text_words(models: HashMap<usize, FiniteContextModelWords>, seed
     
     println!("context is {}",&context.join(" "));
     println!("model loaded is {}",model.get_k());
+    let mut generated_text_length = seed.split(' ').count();
 
     for _ in 0..length {
         let next_char = model.sample_next_word(&context.join(" "));
-        generated_text += next_char.as_str();
         generated_text += " ";
-        if generated_text.len() == original_k{
+        generated_text += next_char.as_str();
+        generated_text_length += 1;
+        if generated_text_length == original_k {
             model = models.get(&original_k).unwrap();
             println!("Changed to model {}",model.get_k());
+            context = generated_text.split(' ').map(String::from).collect();
         }
+
         context.push(next_char);
 
         if context.len() > model.get_k() {

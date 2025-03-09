@@ -102,7 +102,8 @@ impl FiniteContextModelWords {
         let total_count: f64 = symbol_counts.values().sum::<usize>() as f64;
 
         if total_count == 0.0 {
-            return String::from(" ");
+            let index = rng.random_range(0..self.symbols.len());
+            return self.symbols[index].clone();
         }
 
         let mut cumulative_probability = 0.0;
@@ -115,7 +116,8 @@ impl FiniteContextModelWords {
             }
         }
 
-        String::from(" ")
+        let index = rng.random_range(0..self.symbols.len());
+        return self.symbols[index].clone();
     }
 
     pub fn get_k(&self) -> usize {

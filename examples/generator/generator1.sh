@@ -3,9 +3,9 @@
 EXECUTABLE="target/debug/generator"
 
 FILE="sequences/sequence1.txt"
-K=10
-ALPHA=0.1
-PRIOR="G"
-SEQUENCE_LENGTH=10
+K=3
+ALPHA=0.01
+PRIOR="ACTG"
+SEQUENCE_LENGTH=200
 
 $EXECUTABLE $FILE -k $K -a $ALPHA -p $PRIOR -s $SEQUENCE_LENGTH
