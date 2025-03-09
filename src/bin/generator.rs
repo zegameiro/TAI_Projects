@@ -1,7 +1,7 @@
 extern crate argparse;
 extern crate rand;
 use std::collections::HashMap;
-use tai_first_project::{file_reader::FileReader, finite_context_model::FiniteContextModel, text_generator, *};
+use tai_first_project::{file_reader::FileReader, finite_context_model::FiniteContextModel,finite_context_model_words::FiniteContextModelWords, text_generator, *};
 use argparse::{ArgumentParser, Store};
 
 fn main() {
@@ -9,7 +9,8 @@ fn main() {
     let mut k_value: usize = 3;
     let mut alpha: f64 = 0.01;
     let mut prior: String = String::new();
-    let mut sequence_length: usize = 500; 
+    let mut sequence_length: usize = 500;
+    let mut mode = "normal".to_string();
 
     {
         let mut argument_parser: ArgumentParser<'_> = ArgumentParser::new();
@@ -36,36 +37,78 @@ fn main() {
         argument_parser.refer(&mut sequence_length)
             .add_option(&["-s"], Store, "Length of the generated sequence");
 
+        // Size of the generated sequence
+        argument_parser.refer(&mut mode)
+            .add_option(&["-m"], Store, "Mode of context \"normal\":chars, \"words\":words");
+
         argument_parser.parse_args_or_exit();
     }
 
+    if !["normal","words"].contains(&mode.as_str()){
+        println!("invalid mode");
+        return;
+    }
+    
     // Vector of models
-    let mut models: HashMap<usize, FiniteContextModel> = HashMap::new();
+    let mut models_n: HashMap<usize, FiniteContextModel> = HashMap::new();
+    let mut models_words: HashMap<usize, FiniteContextModelWords> = HashMap::new();
 
     for k in {
-        if k_value > prior.len(){
-            vec![k_value,prior.len()]
-        }else {
-            vec![k_value]
-        }
-    }{
-        let mut model = FiniteContextModel::new(k, alpha);
-        let mut file_reader_struct = open_new_file(file_path.clone());
-    
-        println!("Training model with k {}",k);
-        loop {
-            match file_reader::read_char(&mut file_reader_struct) {
-                Ok(Some(char)) => {
-                    model.train_char(char);
-                }
-                Ok(None) => break,
-                Err(e) => {
-                    eprintln!("Error reading file: {}", e);
-                    break;
-                }
+        if mode == "normal"{
+            if k_value > prior.len(){
+                vec![k_value,prior.len()]
+            }else {
+                vec![k_value]
+            }
+        } else {
+            let mut context: Vec<String> = Vec::new();
+            for word in prior.rsplit(' '){
+                context.push(String::from(word));
+            };
+            if k_value > context.len(){
+                vec![k_value,context.len()]
+            }else {
+                vec![k_value]
             }
         }
-        models.insert(k, model);
+    }{
+        if mode == "normal"{
+            let mut model = FiniteContextModel::new(k, alpha);
+            let mut file_reader_struct = open_new_file(file_path.clone());
+        
+            println!("Training model with k {}",k);
+            loop {
+                match file_reader::read_char(&mut file_reader_struct) {
+                    Ok(Some(char)) => {
+                        model.train_char(char);
+                    }
+                    Ok(None) => break,
+                    Err(e) => {
+                        eprintln!("Error reading file: {}", e);
+                        break;
+                    }
+                }
+            }
+            models_n.insert(k, model);
+        } else {
+            let mut model = FiniteContextModelWords::new(k, alpha);
+            let mut file_reader_struct = open_new_file(file_path.clone());
+        
+            println!("Training model with k {}",k);
+            loop {
+                match file_reader::read_word(&mut file_reader_struct) {
+                    Ok(Some(char)) => {
+                        model.train_word(&char);
+                    }
+                    Ok(None) => break,
+                    Err(e) => {
+                        eprintln!("Error reading file: {}", e);
+                        break;
+                    }
+                }
+            }
+            models_words.insert(k, model);
+        }
     }
     // if prior.len() > k_value {
     //     eprint!("Prior sequence length must be less than or equal to k");
@@ -73,7 +116,11 @@ fn main() {
     // }
 
     println!("Model created successfully\nGenerating text...");
-    let generated_text = text_generator::generate_text(models, &prior, sequence_length,k_value);
+    let generated_text = if mode == "normal" {
+        text_generator::generate_text(models_n, &prior, sequence_length,k_value)
+    }else{
+        text_generator::generate_text_words(models_words, &prior, sequence_length,k_value)
+    };
     println!("Generated Text:\n{}", generated_text);
 
 }
@@ -84,7 +131,7 @@ fn open_new_file(file_path: String) -> FileReader{
     let mut file_reader_struct = FileReader{
         filename:String::from(file_path),
         reader:Option::None,
-        buffer:String::new(),
+        buffer:Vec::new(),
     };
 
     if !file_reader::open_file(&mut file_reader_struct).is_ok(){

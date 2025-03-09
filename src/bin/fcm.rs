@@ -1,6 +1,6 @@
 extern crate argparse;
 
-use tai_first_project::{finite_context_model::FiniteContextModel, model_saver_loader::save_model, *};
+use tai_first_project::{finite_context_model::FiniteContextModel, *};
 use argparse::{ArgumentParser, Store};
 
 fn main() {
@@ -30,9 +30,9 @@ fn main() {
     }
 
     let mut file_reader_struct = file_reader::FileReader{
-        filename:String::from(file_path),
-        reader:Option::None,
-        buffer:String::new(),
+        filename: String::from(file_path),
+        reader: Option::None,
+        buffer: Vec::new(),
     };
 
     if !file_reader::open_file(&mut file_reader_struct).is_ok(){
@@ -71,7 +71,5 @@ fn main() {
     }
 
     println!("Average information content: {}", total_info / text_length as f64);
-    println!("Saving Model!!");
-    save_model(&model, "modelSaved.model");
 
 }

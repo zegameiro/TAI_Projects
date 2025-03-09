@@ -31,7 +31,7 @@ fn main() {
     let mut file_reader_struct = file_reader::FileReader{
         filename:String::from(file_path),
         reader:Option::None,
-        buffer:String::new(),
+        buffer: Vec::new(),
     };
 
     if !file_reader::open_file(&mut file_reader_struct).is_ok(){

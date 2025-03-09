@@ -1,15 +1,14 @@
-use std::{fs::File, io::{self, BufReader, Read}};
+use std::{fs::File, io::{self, BufRead, BufReader, Read}};
 
 pub struct FileReader {
     pub filename: String,
     pub reader: Option<BufReader<File>>,
-    pub buffer: String,
+    pub buffer: Vec<String>,
 }
 
 pub fn open_file(file_reader: &mut FileReader) -> io::Result<()> {
     let file = File::open(&file_reader.filename)?;
     file_reader.reader = Some(BufReader::new(file));
-    file_reader.buffer.clear();
     Ok(())
 }
 
@@ -60,6 +59,29 @@ pub fn read_buff(file_reader: &mut FileReader, buff: &mut String, size: usize) -
         }
         Err(_) => Err(io::Error::new(io::ErrorKind::InvalidData, "Invalid UTF-8")),
     }
+}
+
+pub fn read_word(file_reader: &mut FileReader) -> io::Result<Option<String>> {
+    let reader = match file_reader.reader.as_mut() {
+        Some(r) => r,
+        None => return Ok(None),
+    };
+
+    if file_reader.buffer.is_empty(){
+        let mut buffer = String::new();
+        reader.read_line(&mut buffer)?;
+    
+        for word in buffer.rsplit(' ').filter(|w| !w.is_empty()){
+            file_reader.buffer.push(String::from(word));
+        };
+    };
+
+    if file_reader.buffer.is_empty() {
+        return Ok(None);
+    }
+
+    return Ok(Some(file_reader.buffer.remove(0)))
+
 }
 
 fn utf8_char_length(byte: u8) -> usize {
