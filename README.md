@@ -36,7 +36,7 @@ With the following arguments:
 #### Run generator
 At the root of the project, run:
 ```bash
-target/debug/generator {file} -k {k} -a {a} -p {p} -s {s}
+target/debug/generator {file} -k {k} -a {a} -p {p} -s {s} -m {mode}
 ```
 
 With the following arguments:
@@ -45,6 +45,7 @@ With the following arguments:
 - `a`: the smoothing parameter: the value to add to the counts to avoid zero probabilities
 - `p`: the first characters of the generated text
 - `s`: the number of characters to generate
+- `m`: the mode that generator use the default is `normal` that uses chars as tokens the other mode is `words` that use words as tokens
 
 #### Examples
 Some bash scripts are available in the `examples` folder to run the programs with some examples.

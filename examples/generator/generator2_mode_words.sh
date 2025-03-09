@@ -3,9 +3,9 @@
 EXECUTABLE="target/debug/generator"
 
 FILE="sequences/sequence2.txt"
-K=5
+K=3
 ALPHA=0.1
 PRIOR="armas"
 SEQUENCE_LENGTH=200
 
-$EXECUTABLE $FILE -k $K -a $ALPHA -p $PRIOR -s $SEQUENCE_LENGTH
+$EXECUTABLE $FILE -k $K -a $ALPHA -p $PRIOR -s $SEQUENCE_LENGTH -m words
