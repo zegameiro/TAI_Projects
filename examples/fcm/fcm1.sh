@@ -2,8 +2,8 @@
 
 EXECUTABLE="target/debug/fcm"
 
-FILE="sequences/sequence1.txt"
-K=3
-ALPHA=10
+FILE="sequences/sequence7.txt"
+K=4
+ALPHA=0.1
 
 $EXECUTABLE $FILE -k $K -a $ALPHA
