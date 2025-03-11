@@ -1,17 +1,14 @@
-# TAI_First_Project
-First Project for the class of TAI 2024/2025
-
+# First Project for the class of TAI 2024/2025
 
 ## Instructions
 
 ### Dependencies
 
 #### Rust
-Rust need to be installed.
+Rust and Cargo need to be installed.
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
-
 
 ### Run the programs
 
@@ -46,6 +43,17 @@ With the following arguments:
 - `p`: the first characters of the generated text
 - `s`: the number of characters to generate
 - `m`: the mode that generator use the default is `normal` that uses chars as tokens the other mode is `words` that use words as tokens
+
+#### Run chart generator
+At the root of the project, run:
+```bash
+target/debug/chart_generator {file} -a {a} -o {output_file}
+```
+
+With the following arguments:
+- `file`: the path to the file .txt with the data to train the model
+- `a`: the smoothing parameter: the value to add to the counts to avoid zero probabilities
+- `output_file`: the path to the output file to save the chart it must end with .png
 
 #### Examples
 Some bash scripts are available in the `examples` folder to run the programs with some examples.
