@@ -4,6 +4,10 @@
 
 ### Dependencies
 
+- argparse, version 0.2.2
+- plotters, version 0.3.7
+- rand , version 0.9.0
+
 #### Rust
 Rust and Cargo need to be installed.
 ```bash
@@ -57,3 +61,12 @@ With the following arguments:
 
 #### Examples
 Some bash scripts are available in the `examples` folder to run the programs with some examples.
+
+
+## Authors
+
+| Author | Percentage |
+| :--: | :--: |
+| Guilherme Amorim | 1/3 |
+| José Gameiro | 1/3 |
+| Tomás Victal | 1/3 |
