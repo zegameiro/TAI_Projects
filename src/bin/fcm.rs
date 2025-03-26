@@ -1,7 +1,10 @@
 extern crate argparse;
+extern crate serde;
+extern crate serde_json;
 
 use tai_first_project::{finite_context_model::FiniteContextModel, *};
 use argparse::{ArgumentParser, Store};
+use model_saver_loader::save_model;
 
 fn main() {
 
@@ -56,6 +59,10 @@ fn main() {
             }
         }
     }
+
+    let output_filename = "trained_model.json";
+    save_model(&model, output_filename);
+    println!("Model salved as {}", output_filename);
 
     file_reader_struct.reader = None;
     file_reader::open_file(&mut file_reader_struct).unwrap();
