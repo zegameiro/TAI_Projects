@@ -60,9 +60,8 @@ fn main() {
         }
     }
 
-    let output_filename = "trained_model.json";
+    let output_filename = "trained_model";
     save_model(&model, output_filename);
-    println!("Model salved as {}", output_filename);
 
     file_reader_struct.reader = None;
     file_reader::open_file(&mut file_reader_struct).unwrap();
