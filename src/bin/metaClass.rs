@@ -1,14 +1,13 @@
 use tai_first_project::
     {file_reader, 
-    finite_context_model::FiniteContextModel
+    finite_context_model::FiniteContextModel,
+    data_base_processor::DataBaseProcessor,
 };
 
-
-
-
-
 fn main(){
-    let file_path = "./data/meta.txt";
+    let file_path = "./data/test_meta.txt";
+    let database_file_path = "./data/db.txt";
+
     let k = 3;
     let alpha = 0.1;
 
@@ -40,5 +39,13 @@ fn main(){
         }
     }
 
+    let data_processor = DataBaseProcessor::new(database_file_path.to_string());
+    let nrc_scores = data_processor.compute_nrc(&model);
+    let mut sorted: Vec<(&String, &f64)> = nrc_scores.iter().collect();
+    sorted.sort_by(|a, b| a.1.partial_cmp(b.1).unwrap());
+
+    for (key, value) in sorted {
+        println!("{}: {}", key, value);
+    }
     
 }

@@ -70,3 +70,5 @@ Some bash scripts are available in the `examples` folder to run the programs wit
 | Guilherme Amorim | 1/3 |
 | José Gameiro | 1/3 |
 | Tomás Victal | 1/3 |
+
+## @gi|1003725831|ref|NC_029622.1| Lake Sarah-associated circular virus-20 isolate LSaCV-20-LSMU-2013, complete sequence

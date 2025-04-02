@@ -91,10 +91,12 @@ pub fn read_line(file_reader: &mut FileReader) -> io::Result<Option<String>>{
     };
     let mut buffer = String::new();
     reader.read_line(&mut buffer)?;
-
+    
     if buffer.is_empty() {
         return  Ok(None);
     }
+
+    buffer = buffer.replace("\n", "");
 
     return Ok(Some(buffer));
 }
