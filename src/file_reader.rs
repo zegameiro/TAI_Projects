@@ -84,6 +84,21 @@ pub fn read_word(file_reader: &mut FileReader) -> io::Result<Option<String>> {
 
 }
 
+pub fn read_line(file_reader: &mut FileReader) -> io::Result<Option<String>>{
+    let reader = match file_reader.reader.as_mut() {
+        Some(r) => r,
+        None => return Ok(None),
+    };
+    let mut buffer = String::new();
+    reader.read_line(&mut buffer)?;
+
+    if buffer.is_empty() {
+        return  Ok(None);
+    }
+
+    return Ok(Some(buffer));
+}
+
 fn utf8_char_length(byte: u8) -> usize {
     if byte & 0b1000_0000 == 0 {
         1 // 1-byte char (ASCII)
