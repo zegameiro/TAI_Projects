@@ -3,16 +3,64 @@ use tai_first_project::
     finite_context_model::FiniteContextModel,
     data_base_processor::DataBaseProcessor,
 };
+extern crate argparse;
+
+use argparse::{ArgumentParser, Store};
 
 fn main(){
-    let file_path = "./data/test_meta.txt";
-    let database_file_path = "./data/db.txt";
+    let mut meta_file_path: String = "".to_string();
+    let mut database_file_path: String= "".to_string();
+    let mut k: usize = 3;
+    let mut alpha = 0.01;
+    let mut top_sequences = 20; 
 
-    let k = 3;
-    let alpha = 0.1;
+    {
+        let mut argument_parser: ArgumentParser<'_> = ArgumentParser::new();
+        argument_parser.set_description("Algorithmic Theory of Information Second Project");
+
+        // Meta file path
+        argument_parser.refer(&mut meta_file_path)
+            .add_option(&["-s"], Store, "Path to the meta file (required)")
+            .required();
+
+        // Database file path
+        argument_parser.refer(&mut database_file_path)
+            .add_option(&["-d"], Store, "Path to the database file (required)")
+            .required();
+
+        // Size of the sliding window - k
+        argument_parser.refer(&mut k)
+            .add_option(&["-k"], Store, "Size of the sliding window (default: 3 must be 1 <= k <= 100)");
+
+        // Smoothing parameter - alpha
+        argument_parser.refer(&mut alpha)
+            .add_option(&["-a"], Store, "Smoothing parameter (default: 0.01 must be 0 <= alpha <= 1)");
+
+        // Top sequences to display
+        argument_parser.refer(&mut top_sequences)
+            .add_option(&["-t"], Store, "Number of top sequences to display (default: 20 must be 1 <= top_sequences <= 239)");
+
+        argument_parser.parse_args_or_exit();
+    }
+    
+    // Check if k has a valid value and if it is a number
+    if k < 1 || k > 100 {
+        println!("Error: k must be greater than 0");
+        return;
+    }
+
+    if alpha < 0.0 || alpha > 1.0 {
+        println!("Error: alpha must be between 0 and 1");
+        return;
+    }
+
+    if top_sequences < 1 || top_sequences > 239 {
+        println!("Error: top_sequences must be greater than 0 and less than 240");
+        return;
+    }
 
     let mut file_reader_struct = file_reader::FileReader{
-        filename: String::from(file_path),
+        filename: String::from(meta_file_path),
         reader: None,
         buffer: Vec::new(),
     };
@@ -21,6 +69,9 @@ fn main(){
         println!("error Reading File");
         return;
     }
+
+    use std::time::Instant;
+    let now = Instant::now();
 
     let mut model = FiniteContextModel::new(k, alpha);
 
@@ -39,13 +90,26 @@ fn main(){
         }
     }
 
-    let data_processor = DataBaseProcessor::new(database_file_path.to_string());
-    let nrc_scores = data_processor.compute_nrc(&model);
-    let mut sorted: Vec<(&String, &f64)> = nrc_scores.iter().collect();
-    sorted.sort_by(|a, b| a.1.partial_cmp(b.1).unwrap());
+    println!("Model trained with k = {} and alpha = {}", k, alpha);
 
-    for (key, value) in sorted {
-        println!("{}: {}", key, value);
+    let elapsed = now.elapsed();
+
+    let data_processor = DataBaseProcessor::new(database_file_path.to_string());
+    let mut nrc_scores: Vec<_> = data_processor.compute_nrc(&model).into_iter().collect();
+
+    let elapsed_nrc = now.elapsed();
+
+    nrc_scores.sort_unstable_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
+
+    println!("Top {} sequences:", top_sequences);
+    for (name, score) in nrc_scores.iter().take(top_sequences) {
+        println!("{}: {:.6}", name, score);
     }
-    
+
+    let elapsed_final = now.elapsed();
+
+    println!("\nTime taken to train the model: {:?}", elapsed);
+    println!("Time taken to compute NRC scores: {:?}", elapsed_nrc - elapsed);
+    println!("Total time taken: {:?}", elapsed_final);
+
 }
