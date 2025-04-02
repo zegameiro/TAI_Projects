@@ -13,12 +13,12 @@ fn main(){
 
     let mut file_reader_struct = file_reader::FileReader{
         filename: String::from(file_path),
-        reader: Option::None,
+        reader: None,
         buffer: Vec::new(),
     };
 
     if !file_reader::open_file(&mut file_reader_struct).is_ok(){
-        println!("error ReadingFile");
+        println!("error Reading File");
         return;
     }
 

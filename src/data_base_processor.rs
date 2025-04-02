@@ -12,10 +12,11 @@ impl DataBaseProcessor{
     pub fn new(filename:String) -> Self{
         let mut file_reader_struct = FileReader {
             filename: String::from(filename),
-            reader: Option::None,
+            reader: None,
             buffer: Vec::new(),
         };
-        Self { database: Self::read_samples(&mut file_reader_struct).unwrap() }
+        let database = Self::read_samples(&mut file_reader_struct).unwrap_or_default();
+        Self { database }
     }
 
     pub fn get_database(&self) -> &HashMap<String,String> {
@@ -24,35 +25,28 @@ impl DataBaseProcessor{
 
     fn read_samples(mut file_reader_struct: &mut FileReader) -> Option<HashMap<String,String>> {
         let _ = file_reader::open_file(&mut file_reader_struct);
-        let mut database: HashMap<String,String> = HashMap::new();
+        let mut database= HashMap::new();
         let mut sample: String = String::new();
-        let mut sample_name:String = String::new();
-        loop{
-            match file_reader::read_line(&mut file_reader_struct) {
-                Ok(None) => {
-                    break;
-                }
-                Ok(Some(line)) => {
-                    if line.chars().next().unwrap_or('\0') == '@'{
+        let mut sample_name = None;
 
-                        if !sample.is_empty() && !sample_name.is_empty() {
-                            database.insert(sample_name.clone(), sample.clone());
-                            sample.clear();
-                            sample_name.clear();
-                        }
-
-                        sample_name = line.to_string();
-            
-                    } else {
-                        sample.push_str(line.as_str());
-                    }
+        while let Ok(Some(line)) = file_reader::read_line(file_reader_struct) {
+            if line.starts_with('@') {
+                // If a previous sample exists, store it
+                if let Some(name) = sample_name.take() {
+                    database.insert(name, sample.clone());
                 }
-                Err(e) => {
-                    eprintln!("Error reading file: {}", e);
-                    return None;
-                }
+                sample_name = Some(line);
+                sample.clear();
+            } else {
+                sample.push_str(&line);
             }
         }
+
+        // Insert the last sample if it exists
+        if let Some(name) = sample_name {
+            database.insert(name, sample);
+        }
+
         Some(database)
     }
 
