@@ -52,7 +52,6 @@ impl FiniteContextModel {
 
         self.current_context.push(current_char);
     }
-    
 
     /*
      * Computes the smoothed probability 
