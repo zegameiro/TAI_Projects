@@ -6,36 +6,32 @@ use opencv::{
 };
 use tai_first_project::image_processor::ImageProcessor;
 
-use tai_first_project::finite_context_model_byte::FiniteContextModelByte;
+use tai_first_project::finite_context_model_image::FiniteContextModelImage;
 
 fn main() -> Result<()>{
-    let k = 6;
-    let alpha = 0.01;
+    let alpha = 0.5;
     let path = "./data/images";
     let images = ImageProcessor::new(path);
 
-    let mut model = FiniteContextModelByte::new(k, alpha);
+    let mut model = FiniteContextModelImage::new(alpha);
     
-    let image = imgcodecs::imread("./data/images/yaleB01_P00A-010E-20.png", imgcodecs::IMREAD_COLOR)?;
+    let image = imgcodecs::imread("./data/images/12_2.jpg", imgcodecs::IMREAD_GRAYSCALE)?;
     
     if image.empty() {
         panic!("Could not open or find the image!");
     }
 
-    let data = image.data_bytes()?;
-    for pixel in data.iter(){
-        model.train_byte(*pixel);
-    }
+    model.train_mat_image(image);
+    
+    println!("processing database");
 
     let nrc_scores = images.compute_nrc(&model);
     let mut sorted: Vec<(&String, &f64)> = nrc_scores.iter().collect();
     sorted.sort_by(|a, b| a.1.partial_cmp(b.1).unwrap());
 
-    for (key, value) in sorted.iter().take(10) {
+    for (key, value) in sorted.iter().take(15) {
         println!("{}: {}", key, value);
     }
 
-
-    
     Ok(())
 }

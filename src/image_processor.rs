@@ -2,7 +2,7 @@ use opencv::{imgcodecs, prelude::*};
 
 use std::{collections::HashMap, fs};
 
-use crate::finite_context_model_byte::FiniteContextModelByte;
+use crate::finite_context_model_image::FiniteContextModelImage;
 
 pub struct ImageProcessor {
     images_list: Vec<String>
@@ -34,15 +34,15 @@ impl ImageProcessor{
         &self.images_list
     }
 
-    pub fn compute_nrc(&self, model: &FiniteContextModelByte) -> HashMap<String,f64> {
+    pub fn compute_nrc(&self, model: &FiniteContextModelImage) -> HashMap<String,f64> {
 
         let mut nrc_scores: HashMap<String, f64> = HashMap::new();
 
         for file in &self.images_list {
-            let image = imgcodecs::imread(file.as_str(), imgcodecs::IMREAD_COLOR).unwrap();
-            let arr: &[u8] = image.data_bytes().unwrap();
-            let compress_size = model.calculate_information_content( arr);
-            let sequence_length = arr.len() as f64;
+            let image = imgcodecs::imread(file.as_str(), imgcodecs::IMREAD_GRAYSCALE).unwrap();
+            let compress_size = model.calculate_information_content(&image);
+            let size = image.size().unwrap();
+            let sequence_length = (size.width * size.height) as f64;
             let nrc_score = if sequence_length > 0.0 {
                 compress_size / (2.0 * sequence_length)
             } else {

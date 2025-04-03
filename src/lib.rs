@@ -7,5 +7,5 @@ pub mod image_processor;
 // finites_contexts_models
 pub mod finite_context_model;
 pub mod finite_context_model_words;
-pub mod finite_context_model_byte;
+pub mod finite_context_model_image;
 pub mod finite_context_model_audio;
