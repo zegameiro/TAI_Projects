@@ -1,6 +1,5 @@
 use opencv::{
     prelude::*,
-    highgui,
     imgcodecs,
     Result,
 };
