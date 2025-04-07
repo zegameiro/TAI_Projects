@@ -1,7 +1,5 @@
 use tai_first_project::
-    {file_reader, 
-    finite_context_model::FiniteContextModel,
-    data_base_processor::DataBaseProcessor,
+    {data_base_processor::{ComparisionResult, DataBaseProcessor}, file_reader, finite_context_model::FiniteContextModel
 };
 extern crate argparse;
 
@@ -13,6 +11,7 @@ fn main(){
     let mut k: usize = 3;
     let mut alpha = 0.01;
     let mut top_sequences = 20; 
+    let treshold = 0.5;
 
     {
         let mut argument_parser: ArgumentParser<'_> = ArgumentParser::new();
@@ -44,7 +43,7 @@ fn main(){
     }
     
     // Check if k has a valid value and if it is a number
-    if k < 1 || k > 100 {
+    if k < 1 || k > 20   {
         println!("Error: k must be greater than 0");
         return;
     }
@@ -107,6 +106,18 @@ fn main(){
     }
 
     let elapsed_final = now.elapsed();
+
+    // Collect sequences with scores bellow the threshold
+    let low_scores: Vec<_> = nrc_scores.iter()
+        .filter(|(_, score)| *score < treshold)
+        .collect();
+
+    let low_score_names: Vec<String> = low_scores.iter().map(|(name, _)| name.clone()).collect();
+
+
+    let results: Vec<ComparisionResult> = data_processor.comparative_nrc_analysis(&low_score_names, k, alpha);
+    let output_file = "comparative_nrc_results.json";
+    let _ = data_processor.export_nrc_comparisons_to_json(&results, output_file);
 
     println!("\nTime taken to train the model: {:?}", elapsed);
     println!("Time taken to compute NRC scores: {:?}", elapsed_nrc - elapsed);

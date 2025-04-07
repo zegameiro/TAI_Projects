@@ -1,5 +1,6 @@
 
-use std::collections::HashMap;
+use std::{collections::HashMap, fs::File, io::Write};
+use serde::Serialize;
 
 use crate::{file_reader::{self, FileReader}, finite_context_model::FiniteContextModel};
 
@@ -7,6 +8,17 @@ pub struct DataBaseProcessor {
     database: HashMap<String,String>,
 }
 
+#[derive(Serialize)]
+pub struct ComparisionResult {
+    base_sequence: String,
+    matches: Vec<MatchScore>
+}
+
+#[derive(Serialize)]
+pub struct MatchScore {
+    target_name: String,
+    nrc_score: f64,
+}
 
 impl DataBaseProcessor{
     pub fn new(filename:String) -> Self{
@@ -67,5 +79,64 @@ impl DataBaseProcessor{
         }
 
         nrc_scores
+    }
+
+    pub fn comparative_nrc_analysis(
+        &self, 
+        low_score_names: &[String], 
+        k: usize, 
+        alpha: f64
+    ) -> Vec<ComparisionResult> {
+        let mut comparison_results: Vec<ComparisionResult> = Vec::new();
+
+        for low_name in low_score_names {
+            if let Some(low_sequence) = self.database.get(low_name) {
+                // Train a model on the low NRC sequence
+                let mut model = FiniteContextModel::new(k, alpha);
+                for char in low_sequence.chars() {
+                    model.train_char(char);
+                }
+
+                // Calculate NRC for all other sequences
+                let mut comparisons: Vec<_> = Vec::new();
+                for target_name in low_score_names {
+                    if let Some(target_sequence) = self.database.get(target_name) {
+
+                        let compressed_size = model.calculate_information_content(target_sequence);
+                        let nrc_score = if !target_sequence.is_empty() {
+                            compressed_size / (2.0 * target_sequence.len() as f64)
+                        } else {
+                            0.0
+                        };
+
+                        comparisons.push(MatchScore {
+                            target_name: target_name.clone(),
+                            nrc_score,
+                        });
+                    }
+                }
+
+                // Sort comparisons by NRC score
+                comparisons.sort_by(|a, b| a.nrc_score.partial_cmp(&b.nrc_score).unwrap());
+
+                comparison_results.push(ComparisionResult {
+                    base_sequence: low_name.clone(),
+                    matches: comparisons,
+                });
+            }
+        }
+
+        comparison_results
+    }
+
+    pub fn export_nrc_comparisons_to_json(
+        &self,
+        results: &[ComparisionResult],
+        output_file: &str,
+    ) -> std::io::Result<()> {
+        let json_data = serde_json::to_string_pretty(results)?;
+        let mut file = File::create(output_file)?;
+        file.write_all(json_data.as_bytes())?;
+        Ok(())
     }
 }
