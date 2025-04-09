@@ -118,4 +118,20 @@ impl FiniteContextModel {
     pub fn get_k(&self) -> usize {
         self.k
     }
+
+    pub fn complexity_profile(&self, text: &str) -> Vec<f64> {
+        let mut profile: Vec<f64> = Vec::new();
+        let chars: Vec<char> = text.chars().collect();
+
+        for window in chars.windows(self.k + 1) {
+            if let Some((&next_char, context_chars)) = window.split_last() {
+                let context: String = context_chars.iter().collect();
+                let probability = self.compute_probability(&context, next_char);
+                let bit_cost = -probability.log2(); 
+                profile.push(bit_cost);
+            }
+        }
+
+        profile
+    }
 }

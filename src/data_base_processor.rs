@@ -81,6 +81,10 @@ impl DataBaseProcessor{
         nrc_scores
     }
 
+    pub fn get_sequence_by_name(&self, name: &str) -> Option<&String> {
+        self.database.get(name)
+    }
+
     pub fn comparative_nrc_analysis(
         &self, 
         low_score_names: &[String], 

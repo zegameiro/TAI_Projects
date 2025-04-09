@@ -1,5 +1,5 @@
 use tai_first_project::
-    {data_base_processor::{ComparisionResult, DataBaseProcessor}, file_reader, finite_context_model::FiniteContextModel
+    {chart_generator::ChartGenerator, data_base_processor::{ComparisionResult, DataBaseProcessor}, file_reader, finite_context_model::FiniteContextModel
 };
 extern crate argparse;
 
@@ -11,7 +11,7 @@ fn main(){
     let mut k: usize = 3;
     let mut alpha = 0.01;
     let mut top_sequences = 20; 
-    let treshold = 0.5;
+    let mut treshold = 0.5;
 
     {
         let mut argument_parser: ArgumentParser<'_> = ArgumentParser::new();
@@ -39,6 +39,10 @@ fn main(){
         argument_parser.refer(&mut top_sequences)
             .add_option(&["-t"], Store, "Number of top sequences to display (default: 20 must be 1 <= top_sequences <= 239)");
 
+        // Threshold for low scores
+        argument_parser.refer(&mut treshold)
+            .add_option(&["-l"], Store, "Threshold for low scores (default: 0.5)");
+
         argument_parser.parse_args_or_exit();
     }
     
@@ -58,6 +62,11 @@ fn main(){
         return;
     }
 
+    if treshold < 0.0 || treshold > 1.0 {
+        println!("Error: treshold must be between 0 and 1");
+        return;
+    }
+
     let mut file_reader_struct = file_reader::FileReader{
         filename: String::from(meta_file_path),
         reader: None,
@@ -73,11 +82,12 @@ fn main(){
     let now = Instant::now();
 
     let mut model = FiniteContextModel::new(k, alpha);
-
+    let mut metagonic_sample = String::new();
     loop {
         match file_reader::read_char(&mut file_reader_struct) {
             Ok(Some(char)) => {
                 if char != '\n' {
+                    metagonic_sample.push(char);
                     model.train_char(char);
                 }
             }
@@ -114,10 +124,27 @@ fn main(){
 
     let low_score_names: Vec<String> = low_scores.iter().map(|(name, _)| name.clone()).collect();
 
-
     let results: Vec<ComparisionResult> = data_processor.comparative_nrc_analysis(&low_score_names, k, alpha);
     let output_file = "comparative_nrc_results.json";
     let _ = data_processor.export_nrc_comparisons_to_json(&results, output_file);
+
+    let mut profiles: Vec<(&str, Vec<f64>)> = Vec::new();
+
+    let meta_profile = model.complexity_profile(&metagonic_sample);
+    profiles.push(("meta", meta_profile));
+
+    for name in &low_score_names {
+        if let Some(profile) = data_processor.get_sequence_by_name(name) {
+            let profile = model.complexity_profile(&profile);
+            profiles.push((name.as_str(), profile));
+        }
+    }
+
+    let generator: ChartGenerator = ChartGenerator::new(alpha as f32, 4.0);
+
+    if let Err(e) = generator.draw_complexity_profiles(profiles, "complexity_profiles.png") {
+        eprintln!("Failed to draw complexity profiles: {}", e);
+    }
 
     println!("\nTime taken to train the model: {:?}", elapsed);
     println!("Time taken to compute NRC scores: {:?}", elapsed_nrc - elapsed);

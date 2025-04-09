@@ -77,4 +77,44 @@ impl ChartGenerator {
 
     }
 
+    pub fn draw_complexity_profiles(
+        &self,
+        profiles: Vec<(&str, Vec<f64>)>,
+        output_path: &str,
+    ) -> Result<(), Box<dyn std::error::Error>> {
+        let cols = 3; // how many charts per row
+        let rows = (profiles.len() as f32 / cols as f32).ceil() as usize;
+    
+        let root = BitMapBackend::new(output_path, (1860, 400 * rows as u32)).into_drawing_area();
+        root.fill(&WHITE)?;
+    
+        let areas = root.split_evenly((rows, cols));
+    
+        let max_val = profiles
+            .iter()
+            .flat_map(|(_, p)| p.iter().cloned())
+            .fold(0f64, f64::max);
+    
+        for ((name, profile), area) in profiles.into_iter().zip(areas) {
+            let max_len: usize = 400;
+    
+            let mut chart = ChartBuilder::on(&area)
+                .margin(10)
+                .caption(name, ("sans-serif", 20))
+                .x_label_area_size(30)
+                .y_label_area_size(40)
+                .build_cartesian_2d(0..max_len, 0f64..max_val)?;
+    
+            chart.configure_mesh().disable_mesh().draw()?;
+    
+            chart.draw_series(LineSeries::new(
+                profile.iter().enumerate().map(|(x, y)| (x, *y)),
+                &RED,
+            ))?;
+        }
+    
+        Ok(())
+    }
+    
+
 }
