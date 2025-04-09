@@ -70,3 +70,7 @@ Some bash scripts are available in the `examples` folder to run the programs wit
 | Guilherme Amorim | 1/3 |
 | José Gameiro | 1/3 |
 | Tomás Victal | 1/3 |
+
+
+## Sequences used
+seq 44, 48, 5, 10, 6
