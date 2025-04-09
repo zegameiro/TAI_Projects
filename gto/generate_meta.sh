@@ -49,7 +49,8 @@ for m_percent in "${mutation_percentages[@]}"; do
 
         echo "Original Sequence (from $seq_header): $sequence" >> "$output_mutate"
 
-        mutated_sequence=$(printf "%s\n" "$sequence" | gto_genomic_dna_mutate -s "$s" -m "$m_percent" | tr -d '\n')
+        m_decimal=$(LC_NUMERIC=C awk "BEGIN { printf \"%.5f\", $m_percent / 100 }")
+        mutated_sequence=$(printf "%s\n" "$sequence" | gto_genomic_dna_mutate -s "$s" -m "$m_decimal" | tr -d '\n')
         echo "Mutated Sequence: $mutated_sequence" >> "$output_mutate"
         echo "" >> "$output_mutate"
 
