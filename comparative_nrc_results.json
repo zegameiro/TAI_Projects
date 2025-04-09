@@ -4,27 +4,27 @@
     "matches": [
       {
         "target_name": "@NC_001348.1 Human herpesvirus 3, complete genome",
-        "nrc_score": 0.08158010629538576
+        "nrc_score": 0.2185456528994958
       },
       {
         "target_name": "@Super MUL 720",
-        "nrc_score": 1.1164964416584207
+        "nrc_score": 1.0299024215986323
       },
       {
         "target_name": "@Super ISS Si1240",
-        "nrc_score": 1.1417823336558561
+        "nrc_score": 1.038947817632739
       },
       {
         "target_name": "@NC_005831.2 Human Coronavirus NL63, complete genome",
-        "nrc_score": 1.2281001203103248
+        "nrc_score": 1.0702825906733922
       },
       {
         "target_name": "@gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome",
-        "nrc_score": 1.2339218496869604
+        "nrc_score": 1.0719882740410382
       },
       {
         "target_name": "@OR353425.1 Octopus vulgaris mitochondrion, complete genome",
-        "nrc_score": 1.3093515945469085
+        "nrc_score": 1.095586674842511
       }
     ]
   },
@@ -33,27 +33,27 @@
     "matches": [
       {
         "target_name": "@NC_005831.2 Human Coronavirus NL63, complete genome",
-        "nrc_score": 0.06267321587492329
+        "nrc_score": 0.20465287451972436
       },
       {
         "target_name": "@gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome",
-        "nrc_score": 0.4113729508972097
+        "nrc_score": 0.4542424375400387
       },
       {
         "target_name": "@Super MUL 720",
-        "nrc_score": 1.0141292956240686
+        "nrc_score": 0.9962598038902352
       },
       {
         "target_name": "@Super ISS Si1240",
-        "nrc_score": 1.0382865126344094
+        "nrc_score": 1.00662015870476
       },
       {
         "target_name": "@NC_001348.1 Human herpesvirus 3, complete genome",
-        "nrc_score": 1.0532309833359554
+        "nrc_score": 1.0163080854099042
       },
       {
         "target_name": "@OR353425.1 Octopus vulgaris mitochondrion, complete genome",
-        "nrc_score": 1.0973516033584019
+        "nrc_score": 1.027478743431433
       }
     ]
   },
@@ -62,27 +62,27 @@
     "matches": [
       {
         "target_name": "@Super ISS Si1240",
-        "nrc_score": 0.021727701926006482
+        "nrc_score": 0.17318583805012572
       },
       {
         "target_name": "@Super MUL 720",
-        "nrc_score": 0.989920372157681
+        "nrc_score": 0.9863267753131637
       },
       {
         "target_name": "@OR353425.1 Octopus vulgaris mitochondrion, complete genome",
-        "nrc_score": 1.0007623499119016
+        "nrc_score": 0.999785176821954
       },
       {
         "target_name": "@gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome",
-        "nrc_score": 1.0016701374525803
-      },
-      {
-        "target_name": "@NC_001348.1 Human herpesvirus 3, complete genome",
-        "nrc_score": 1.0016812016510814
+        "nrc_score": 1.0002556014018764
       },
       {
         "target_name": "@NC_005831.2 Human Coronavirus NL63, complete genome",
-        "nrc_score": 1.0019260318951897
+        "nrc_score": 1.0003539947667763
+      },
+      {
+        "target_name": "@NC_001348.1 Human herpesvirus 3, complete genome",
+        "nrc_score": 1.0004639299218914
       }
     ]
   },
@@ -91,27 +91,27 @@
     "matches": [
       {
         "target_name": "@OR353425.1 Octopus vulgaris mitochondrion, complete genome",
-        "nrc_score": 0.08667367876551303
-      },
-      {
-        "target_name": "@Super ISS Si1240",
-        "nrc_score": 1.0081231031237092
+        "nrc_score": 0.22188072527794875
       },
       {
         "target_name": "@Super MUL 720",
-        "nrc_score": 1.0101805276664846
+        "nrc_score": 0.9943974260846977
+      },
+      {
+        "target_name": "@Super ISS Si1240",
+        "nrc_score": 0.9968721169406937
       },
       {
         "target_name": "@NC_001348.1 Human herpesvirus 3, complete genome",
-        "nrc_score": 1.039955469170253
+        "nrc_score": 1.0122599698361074
       },
       {
         "target_name": "@NC_005831.2 Human Coronavirus NL63, complete genome",
-        "nrc_score": 1.0505901277776055
+        "nrc_score": 1.014501227726618
       },
       {
         "target_name": "@gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome",
-        "nrc_score": 1.0536004605552745
+        "nrc_score": 1.015829333128614
       }
     ]
   },
@@ -120,27 +120,27 @@
     "matches": [
       {
         "target_name": "@Super MUL 720",
-        "nrc_score": 0.020820866060001088
+        "nrc_score": 0.17154551765862522
       },
       {
         "target_name": "@Super ISS Si1240",
-        "nrc_score": 0.9941473128657503
-      },
-      {
-        "target_name": "@gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome",
-        "nrc_score": 1.0003336916839196
-      },
-      {
-        "target_name": "@NC_005831.2 Human Coronavirus NL63, complete genome",
-        "nrc_score": 1.0003692190632358
+        "nrc_score": 0.9920607082463531
       },
       {
         "target_name": "@OR353425.1 Octopus vulgaris mitochondrion, complete genome",
-        "nrc_score": 1.000587189102505
+        "nrc_score": 0.9997752599599359
+      },
+      {
+        "target_name": "@gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome",
+        "nrc_score": 0.9998722832523746
+      },
+      {
+        "target_name": "@NC_005831.2 Human Coronavirus NL63, complete genome",
+        "nrc_score": 0.9999022632308993
       },
       {
         "target_name": "@NC_001348.1 Human herpesvirus 3, complete genome",
-        "nrc_score": 1.0007699690149292
+        "nrc_score": 1.0001963663370523
       }
     ]
   },
@@ -149,27 +149,27 @@
     "matches": [
       {
         "target_name": "@gi|49169782|ref|NC_005831.2| Human Coronavirus NL63, complete genome",
-        "nrc_score": 0.07042246748574521
+        "nrc_score": 0.21023905132521709
       },
       {
         "target_name": "@NC_005831.2 Human Coronavirus NL63, complete genome",
-        "nrc_score": 0.40260830369746936
+        "nrc_score": 0.4535406990145286
       },
       {
         "target_name": "@Super MUL 720",
-        "nrc_score": 1.0127697318986448
+        "nrc_score": 0.9951125284064994
       },
       {
         "target_name": "@Super ISS Si1240",
-        "nrc_score": 1.0326004968463351
+        "nrc_score": 1.0044338422667873
       },
       {
         "target_name": "@NC_001348.1 Human herpesvirus 3, complete genome",
-        "nrc_score": 1.0532817796173917
+        "nrc_score": 1.0163257479571706
       },
       {
         "target_name": "@OR353425.1 Octopus vulgaris mitochondrion, complete genome",
-        "nrc_score": 1.100866935104501
+        "nrc_score": 1.0294437943244585
       }
     ]
   }
