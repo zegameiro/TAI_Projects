@@ -66,9 +66,24 @@ for k in $(seq 1 "$num_meta_files"); do
 
         # Generate new random sequences
         for j in $(seq 1 "$num_generated_sequences"); do
+            # Choose a random sequence ID from the database for the seed
+            random_seq_id=$(shuf -i 1-"$num_db_samples" -n 1)
+            random_seq_header=$(awk -v id="@seq_$random_seq_id" '
+                $0 ~ id {print; exit}
+            ' data/db_test.txt)
+
+            random_seq_full=$(awk -v id="@seq_$random_seq_id" '
+                $0 ~ id {flag=1; next}
+                /^@/ {flag=0}
+                flag {printf "%s", $0}
+            ' data/db_test.txt)
+
+            random_seed_sequence=$(echo "$random_seq_full" | cut -c1-151)
+
+            # Generate a new random sequence based on the chosen random seed
             new_seed_rand=$((RANDOM + 10#$(date +%N) + k * 1000 + i * 100 + j ))
-            random_generated_sequence=$(gto_genomic_gen_random_dna -s "$new_seed_rand" -n 151)
-            echo "Generated Sequence #$j (based on $seq_header): $random_generated_sequence" >> "$output_mutate"
+            random_generated_sequence=$(echo "$random_seed_sequence" | gto_genomic_gen_random_dna -s "$new_seed_rand" -n 151)
+            echo "Generated Sequence #$j (based on $random_seq_header): $random_generated_sequence" >> "$output_mutate"
         done
         echo "" >> "$output_mutate" # Separator
     done
