@@ -19,7 +19,7 @@ for i in $(seq 1 $num_db_samples); do
     echo "$sequence" | fold -w 75 >> "$output_db"
 done
 
-# Meta files with varying mutation rates (0-100%) for fixed random sequences
+# Part 2: Meta files with varying mutation rates (0-100%) for fixed random sequences
 echo "--- Generating meta files with varying mutation rates (0-100%) for fixed sequences ---"
 num_meta_files=5
 num_fixed_sequences=5 # Number of fixed random sequences to choose
@@ -32,7 +32,7 @@ fixed_random_sequence_array=($fixed_random_sequence_ids)
 mutation_percentages=$(seq 0 25 100) # Mutation percentages from 0 to 100 with 25% step
 
 for k in $(seq 1 "$num_meta_files"); do
-    m_percent="${mutation_percentages[$((k - 1))]}" # Get the corresponding percentage
+    m_percent=$(echo "${mutation_percentages[$((k - 1))]}" | tr -d '\n')
     output_mutate="data/meta_varying_mutation_${k}.txt"
     mkdir -p "$(dirname "$output_mutate")"
     > "$output_mutate"
