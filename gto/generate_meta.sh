@@ -22,6 +22,7 @@ done
 
 # meta_m_XX.txt (XX being the mutation percentage)
 num_meta_sequences=10 # Number of new random sequences to generate per meta file
+num_original_to_keep=2 # Number of original sequences to keep without mutation
 mutation_percentages=(25 50 75 100) # Array of mutation percentages
 
 for m_percent in "${mutation_percentages[@]}"; do
@@ -33,8 +34,11 @@ for m_percent in "${mutation_percentages[@]}"; do
 
     # Choose 5 random sequences from db_test.txt
     random_sequence_ids=$(shuf -i 1-"$num_db_samples" -n 5)
+    random_sequence_array=($random_sequence_ids)
 
-    for seq_id in $random_sequence_ids; do
+    for i in $(seq 0 4); do
+        seq_id="${random_sequence_array[$i]}"
+
         seq_header=$(awk -v id="@seq_$seq_id" '
             $0 ~ id {print; exit}
         ' data/db_test.txt)
@@ -49,13 +53,21 @@ for m_percent in "${mutation_percentages[@]}"; do
 
         echo "Original Sequence (from $seq_header): $original_sequence" >> "$output_mutate"
 
+        if (( i < num_original_to_keep )); then
+            echo "Keeping original sequence (no mutation)." >> "$output_mutate"
+        else
+            # Mutate the remaining original sequences
+            new_seed=$((RANDOM + 10#$(date +%N) ))
+            mutated_sequence=$(echo "$original_sequence" | gto_genomic_dna_mutate -s "$new_seed" -m "$m_percent" | tr -d '\n')
+            echo "Mutated Sequence (at ${m_percent}%): $mutated_sequence" >> "$output_mutate"
+        fi
+
         # Generate num_meta_sequences random sequences based on the chosen original
         for j in $(seq 1 "$num_meta_sequences"); do
             # Use a different seed for each generated sequence
-            new_seed=$((RANDOM + 10#$(date +%N) ))
-            random_mutated_sequence=$(gto_genomic_gen_random_dna -s "$new_seed" -n 151)
-            echo "Generated Sequence #$j (based on $seq_header): $random_mutated_sequence" >> "$output_mutate"
-
+            new_seed_rand=$((RANDOM + 10#$(date +%N) + j )) # Add j for more unique seeds
+            random_generated_sequence=$(gto_genomic_gen_random_dna -s "$new_seed_rand" -n 151)
+            echo "Generated Sequence #$j (based on $seq_header): $random_generated_sequence" >> "$output_mutate"
         done
         echo "" >> "$output_mutate" # Add a separator after each original sequence's generated sequences
     done
