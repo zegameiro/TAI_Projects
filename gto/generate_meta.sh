@@ -19,25 +19,28 @@ for i in $(seq 1 $num_db_samples); do
     echo "$sequence" | fold -w 75 >> "$output_db"
 done
 
+# Meta files with varying mutation rates (0-100%) for fixed random sequences
+echo "--- Generating meta files with varying mutation rates (0-100%) ---"
+num_meta_files=5
+num_random_sequences_part2=2 # Number of random sequences to choose
+num_generated_sequences_part2=10 # Number of new generated sequences
 
-# meta_m_XX.txt (XX being the mutation percentage)
-num_meta_sequences=10 # Number of new random sequences to generate per meta file
-num_original_to_keep=2 # Number of original sequences to keep without mutation
-mutation_percentages=(25 50 75 100) # Array of mutation percentages
+# Choose 2 random sequences once for all meta files in this part
+fixed_random_sequence_ids=$(shuf -i 1-"$num_db_samples" -n "$num_random_sequences_part2")
+fixed_random_sequence_array=($fixed_random_sequence_ids)
 
-for m_percent in "${mutation_percentages[@]}"; do
-    output_mutate="data/meta_${m_percent}.txt"
-    mkdir -p "$(dirname "$output_mutate")"
-    > "$output_mutate"
+mutation_percentages_part2=$(seq 0 25 100) # Mutation percentages from 0 to 100 with 25% step
 
-    echo "Generating meta file with ${m_percent}% mutation rate..."
+for k in $(seq 1 "$num_meta_files"); do
+    m_percent_part2="${mutation_percentages_part2[$((k - 1))]}" # Get the corresponding percentage
+    output_mutate_part2="data/meta_varying_mutation_${k}.txt"
+    mkdir -p "$(dirname "$output_mutate_part2")"
+    > "$output_mutate_part2"
 
-    # Choose 5 random sequences from db_test.txt
-    random_sequence_ids=$(shuf -i 1-"$num_db_samples" -n 5)
-    random_sequence_array=($random_sequence_ids)
+    echo "Generating meta file: $output_mutate_part2 with ${m_percent_part2}% mutation rate..."
 
-    for i in $(seq 0 4); do
-        seq_id="${random_sequence_array[$i]}"
+    for i in $(seq 0 $((num_random_sequences_part2 - 1))); do
+        seq_id="${fixed_random_sequence_array[$i]}"
 
         seq_header=$(awk -v id="@seq_$seq_id" '
             $0 ~ id {print; exit}
@@ -51,27 +54,22 @@ for m_percent in "${mutation_percentages[@]}"; do
 
         original_sequence=$(echo "$seq_full" | cut -c1-151)
 
-        echo "Original Sequence (from $seq_header): $original_sequence" >> "$output_mutate"
+        echo "Original Sequence (from $seq_header): $original_sequence" >> "$output_mutate_part2"
 
-        if (( i < num_original_to_keep )); then
-            echo "Keeping original sequence (no mutation)." >> "$output_mutate"
-        else
-            # Mutate the remaining original sequences
-            new_seed=$((RANDOM + 10#$(date +%N) ))
-            mutated_sequence=$(echo "$original_sequence" | gto_genomic_dna_mutate -s "$new_seed" -m "$m_percent" | tr -d '\n')
-            echo "Mutated Sequence (at ${m_percent}%): $mutated_sequence" >> "$output_mutate"
-        fi
+        # Mutate the original sequence
+        new_seed_mutate_part2=$((RANDOM + 10#$(date +%N) + k * 100 + i ))
+        mutated_sequence_part2=$(echo "$original_sequence" | gto_genomic_dna_mutate -s "$new_seed_mutate_part2" -m "$m_percent_part2" | tr -d '\n')
+        echo "Mutated Sequence (at ${m_percent_part2}%): $mutated_sequence_part2" >> "$output_mutate_part2"
 
-        # Generate num_meta_sequences random sequences based on the chosen original
-        for j in $(seq 1 "$num_meta_sequences"); do
-            # Use a different seed for each generated sequence
-            new_seed_rand=$((RANDOM + 10#$(date +%N) + j )) # Add j for more unique seeds
-            random_generated_sequence=$(gto_genomic_gen_random_dna -s "$new_seed_rand" -n 151)
-            echo "Generated Sequence #$j (based on $seq_header): $random_generated_sequence" >> "$output_mutate"
+        # Generate new random sequences
+        for j in $(seq 1 "$num_generated_sequences_part2"); do
+            new_seed_rand_part2=$((RANDOM + 10#$(date +%N) + k * 1000 + i * 100 + j ))
+            random_generated_sequence_part2=$(gto_genomic_gen_random_dna -s "$new_seed_rand_part2" -n 151)
+            echo "Generated Sequence #$j (based on $seq_header): $random_generated_sequence_part2" >> "$output_mutate_part2"
         done
-        echo "" >> "$output_mutate" # Add a separator after each original sequence's generated sequences
+        echo "" >> "$output_mutate_part2" # Separator
     done
 
-    echo "Finished generating meta file: $output_mutate"
+    echo "Finished generating meta file: $output_mutate_part2"
     echo ""
 done
