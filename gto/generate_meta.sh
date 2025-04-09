@@ -52,13 +52,10 @@ for m_percent in "${mutation_percentages[@]}"; do
         # Generate num_meta_sequences random sequences based on the chosen original
         for j in $(seq 1 "$num_meta_sequences"); do
             # Use a different seed for each generated sequence
-            new_seed=$((RANDOM + $(date +%N) ))
+            new_seed=$((RANDOM + 10#$(date +%N) ))
             random_mutated_sequence=$(gto_genomic_gen_random_dna -s "$new_seed" -n 151)
             echo "Generated Sequence #$j (based on $seq_header): $random_mutated_sequence" >> "$output_mutate"
 
-            # Optionally, you could still apply a mutation here if needed, e.g.:
-            # mutated_sequence=$(echo "$random_mutated_sequence" | gto_genomic_dna_mutate -s "$new_seed" -m "$m_percent" | tr -d '\n')
-            # echo "Mutated Generated Sequence #$j: $mutated_sequence" >> "$output_mutate"
         done
         echo "" >> "$output_mutate" # Add a separator after each original sequence's generated sequences
     done
