@@ -29,10 +29,12 @@ num_generated_sequences=30 # Number of new generated sequences per fixed sequenc
 fixed_random_sequence_ids=$(shuf -i 1-"$num_db_samples" -n "$num_fixed_sequences")
 fixed_random_sequence_array=($fixed_random_sequence_ids)
 
-mutation_percentages=$(seq 0 25 100) # Mutation percentages from 0 to 100 with 25% step
+# Define mutation percentages properly as an array
+mutation_percentages=(0 25 50 75 100)
 
 for k in $(seq 1 "$num_meta_files"); do
-    m_percent_int=$(echo "${mutation_percentages[$((k - 1))]}" | tr -d '\n')
+    # Access array element properly using index k-1
+    m_percent_int=${mutation_percentages[$((k - 1))]}
     m_percent_float=$(echo "scale=2; $m_percent_int / 100" | bc)
     output_mutate="data/meta_varying_mutation_${k}.txt"
     mkdir -p "$(dirname "$output_mutate")"
