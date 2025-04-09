@@ -32,12 +32,13 @@ fixed_random_sequence_array=($fixed_random_sequence_ids)
 mutation_percentages=$(seq 0 25 100) # Mutation percentages from 0 to 100 with 25% step
 
 for k in $(seq 1 "$num_meta_files"); do
-    m_percent=$(echo "${mutation_percentages[$((k - 1))]}" | tr -d '\n')
+    m_percent_int=$(echo "${mutation_percentages[$((k - 1))]}" | tr -d '\n')
+    m_percent_float=$(echo "scale=2; $m_percent_int / 100" | bc)
     output_mutate="data/meta_varying_mutation_${k}.txt"
     mkdir -p "$(dirname "$output_mutate")"
     > "$output_mutate"
 
-    echo "Generating meta file: $output_mutate with ${m_percent}% mutation rate..."
+    echo "Generating meta file: $output_mutate with ${m_percent_int}% mutation rate (float: $m_percent_float)..."
 
     for i in $(seq 0 $((num_fixed_sequences - 1))); do
         seq_id="${fixed_random_sequence_array[$i]}"
@@ -58,8 +59,8 @@ for k in $(seq 1 "$num_meta_files"); do
 
         # Mutate the original sequence
         new_seed_mutate=$((RANDOM + 10#$(date +%N) + k * 100 + i ))
-        mutated_sequence=$(echo "$original_sequence" | gto_genomic_dna_mutate -s "$new_seed_mutate" -m "$m_percent" | tr -d '\n')
-        echo "Mutated Sequence (at ${m_percent}%): $mutated_sequence" >> "$output_mutate"
+        mutated_sequence=$(echo "$original_sequence" | gto_genomic_dna_mutate -s "$new_seed_mutate" -m "$m_percent_float" | tr -d '\n')
+        echo "Mutated Sequence (at ${m_percent_int}%): $mutated_sequence" >> "$output_mutate"
 
         # Generate new random sequences
         for j in $(seq 1 "$num_generated_sequences"); do
