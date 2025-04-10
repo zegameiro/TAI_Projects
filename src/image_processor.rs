@@ -34,7 +34,7 @@ impl ImageProcessor{
         &self.images_list
     }
 
-    pub fn compute_ncr_multi_model(&self, models: &HashMap<u8,FiniteContextModelImage>,levels: u8) -> HashMap<String,f64> {
+    pub fn compute_ncr_multi_model(&self, models: &HashMap<u8,FiniteContextModelImage>,levels: i32) -> HashMap<String,f64> {
         let mut aggregated_scores: HashMap<String, Vec<f64>> = HashMap::new();
 
         for (k, model) in models.iter() {
@@ -58,7 +58,7 @@ impl ImageProcessor{
         nrc_scores
     }
 
-    pub fn compute_weighted_nrc(&self, models: &HashMap<u8, FiniteContextModelImage>, levels: u8, gamma: f64) -> HashMap<String, f64> {
+    pub fn compute_weighted_nrc(&self, models: &HashMap<u8, FiniteContextModelImage>, levels: i32, gamma: f64) -> HashMap<String, f64> {
         let mut nrc_scores = HashMap::new();
     
         for file in &self.images_list {
@@ -116,7 +116,7 @@ impl ImageProcessor{
         nrc_scores
     }
 
-    pub fn compute_nrc(&self, model: &FiniteContextModelImage,levels: u8, k:u8 ) -> HashMap<String,f64> {
+    pub fn compute_nrc(&self, model: &FiniteContextModelImage,levels: i32, k:u8 ) -> HashMap<String,f64> {
 
         let mut nrc_scores: HashMap<String, f64> = HashMap::new();
 
@@ -139,7 +139,7 @@ impl ImageProcessor{
     }
 }
 
-pub fn quantize_image(img: &mut Mat,levels: u8){
+pub fn quantize_image(img: &mut Mat,levels: i32){
     let mut quantization_levels: Vec<f64> = (0..levels).map(|i| (i as f64) * (256.0 / (levels as f64))).collect();
     let mut prev_quantization_levels = quantization_levels.clone();
     

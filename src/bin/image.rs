@@ -15,7 +15,7 @@ fn main() -> Result<()>{
     let mut database_path = "".to_string();
     let mut image_path = "".to_string();
     let mut top_sequences = 10;
-    let mut levels:u8 = 255;
+    let mut levels:i32 = 256;
 
     {
         let mut argument_parser: ArgumentParser<'_> = ArgumentParser::new();
@@ -40,7 +40,7 @@ fn main() -> Result<()>{
             .add_option(&["-t"], Store, "Number of top sequences to display (default: 10 must be 1 <= top_sequences <= 239)");
 
         argument_parser.refer(&mut levels)
-            .add_option(&["-l"], Store, "Number of levels to quantize images (default: 4)");
+            .add_option(&["-l"], Store, "Number of levels to quantize images (default: 255)");
 
         argument_parser.parse_args_or_exit();
     }
