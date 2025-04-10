@@ -55,7 +55,8 @@ for k in $(seq 1 "$num_meta_files"); do
             flag {printf "%s", $0}
         ' data/db_test.txt)
 
-        original_sequence=$(echo "$seq_full" | cut -c1-151)
+        # Use the entire sequence for mutation
+        original_sequence="$seq_full"
 
         echo "Original Sequence (from $seq_header): $original_sequence" >> "$output_mutate"
 
