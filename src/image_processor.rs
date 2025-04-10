@@ -82,7 +82,6 @@ impl ImageProcessor{
     
                     let mut weight_sum = 0.0;
     
-                    // Update weights and compute mixture probability
                     for &k in &ks {
                         let model = models.get(&k).unwrap();
                         let context = model.get_context(r, c, &image, k);
@@ -95,15 +94,12 @@ impl ImageProcessor{
                         weight_sum += new_weight;
                     }
     
-                    // Normalize weights
                     for w in new_weights.values_mut() {
                         *w /= weight_sum;
                     }                    
     
-                    // Update weights for next iteration
                     weights = new_weights;
     
-                    // Compute final probability using weighted average
                     let mixed_prob: f64 = ks.iter()
                         .map(|&k| probs.get(&k).unwrap() * weights.get(&k).unwrap())
                         .sum();
@@ -145,9 +141,8 @@ impl ImageProcessor{
 
 pub fn quantize_image(img: &mut Mat,levels: u8){
     let mut quantization_levels: Vec<f64> = (0..levels).map(|i| (i as f64) * (256.0 / (levels as f64))).collect();
-    let mut prev_quantization_levels = quantization_levels.clone(); // Initialize with the first quantization levels
+    let mut prev_quantization_levels = quantization_levels.clone();
     
-    // Initialize iteration variables
     let max_iterations = 100;
     let tolerance = 1e-6;
     
@@ -158,7 +153,6 @@ pub fn quantize_image(img: &mut Mat,levels: u8){
     while iteration < max_iterations {
         iteration += 1;
 
-        // Step 1: Assign each pixel to the closest quantization level
         let mut assignments = vec![0; img.rows() as usize * img.cols() as usize];
         
         for r in 0..rows {
@@ -175,12 +169,10 @@ pub fn quantize_image(img: &mut Mat,levels: u8){
                     }
                 }
 
-                // Assign pixel to closest quantization level
                 assignments[(r * cols + c) as usize] = assigned_level;
             }
         }
 
-        // Step 2: Update quantization levels
         let mut new_quantization_levels = vec![0.0; levels as usize];
         let mut counts = vec![0; levels as usize];
 
@@ -190,14 +182,12 @@ pub fn quantize_image(img: &mut Mat,levels: u8){
             counts[assignment] += 1;
         }
 
-        // Calculate the mean for each quantization level
         for (i, count) in counts.iter().enumerate() {
             if *count > 0 {
                 new_quantization_levels[i] /= *count as f64;
             }
         }
 
-        // Step 3: Check for convergence
         let max_change = new_quantization_levels.iter()
             .zip(&prev_quantization_levels)
             .map(|(new, old)| (new - old).abs())
@@ -207,14 +197,11 @@ pub fn quantize_image(img: &mut Mat,levels: u8){
             break;
         }
 
-        // Update previous quantization levels for next iteration
         prev_quantization_levels = new_quantization_levels.clone();
 
-        // Update current quantization levels
         quantization_levels = new_quantization_levels;
     }
 
-    // Step 4: Quantize the image
     for r in 0..rows {
         for c in 0..cols {
             let pixel = *img.at_2d::<u8>(r, c).unwrap() as f64;
@@ -229,7 +216,6 @@ pub fn quantize_image(img: &mut Mat,levels: u8){
                 }
             }
 
-            // Assign the pixel the quantized value
             *img.at_2d_mut::<u8>(r, c).unwrap() = quantization_levels[assigned_level] as u8;
         }
     }

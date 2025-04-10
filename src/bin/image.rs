@@ -15,7 +15,7 @@ fn main() -> Result<()>{
     let mut database_path = "".to_string();
     let mut image_path = "".to_string();
     let mut top_sequences = 10;
-    let mut levels:u8 = 4;
+    let mut levels:u8 = 255;
 
     {
         let mut argument_parser: ArgumentParser<'_> = ArgumentParser::new();
