@@ -57,6 +57,8 @@ def extract_top20_nrc(output):
         
     return scores, seq_names
 
+VISUALIZATIONS_DIR = "../visualizations/"
+
 # Mutation-level files
 mutation_files = {
     "0%": "../data/meta_varying_mutation_0percent.txt",
@@ -126,7 +128,7 @@ plt.yticks(np.arange(20) + 0.5, [f"#{i+1}" for i in range(20)], fontsize=12)
 plt.xticks(np.arange(len(sorted_labels)) + 0.5, sorted_labels, fontsize=12)
 
 plt.tight_layout()
-plt.savefig("combined_heatmap.png", dpi=300)
+plt.savefig(f"{VISUALIZATIONS_DIR}combined_heatmap.png", dpi=300)
 
 # Line plot of average NRC across mutation levels
 avg_values = [avg_scores[label] for label in sorted_labels]
@@ -138,4 +140,4 @@ plt.xlabel("Mutation Level")
 plt.ylabel("Average NRC")
 plt.grid(True)
 plt.tight_layout()
-plt.savefig("avg_nrc_vs_mutation.png")
+plt.savefig(f"{VISUALIZATIONS_DIR}avg_nrc_vs_mutation.png")
