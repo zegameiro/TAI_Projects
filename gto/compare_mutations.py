@@ -19,7 +19,7 @@ def run_metaclass(meta_file, k=20, alpha=0.01):
         return ""
 
 def extract_top20_nrc(output):
-    """Extract list of 20 NRC scores from output."""
+    """Extract list of 20 NRC scores and sequence names from output."""
     lines = output.splitlines()
     start_idx = None
     for i, line in enumerate(lines):
@@ -27,18 +27,34 @@ def extract_top20_nrc(output):
             start_idx = i + 1
             break
     if start_idx is None:
-        return [0]*20
+        return [0]*20, ["Unknown"]*20
 
     scores = []
+    seq_names = []
     for line in lines[start_idx:start_idx + 20]:
         try:
-            score = float(line.strip().split(":")[-1])
+            parts = line.strip().split(":")
+            score = float(parts[-1])
+            # Extract sequence name (everything before the last colon)
+            seq_name = ":".join(parts[:-1]).strip()
+            # Make name more compact for display
+            if "Generated Sequence #" in seq_name:
+                seq_name = f"Gen#{seq_name.split('#')[1].split(' ')[0]}"
+            elif "Mutated Sequence" in seq_name:
+                seq_name = "Mutated"
+            
             scores.append(score)
+            seq_names.append(seq_name)
         except:
             scores.append(0.0)
+            seq_names.append("Error")
+    
+    # Pad if needed
     while len(scores) < 20:
         scores.append(0.0)
-    return scores
+        seq_names.append("N/A")
+        
+    return scores, seq_names
 
 # Mutation-level files
 mutation_files = {
@@ -51,6 +67,7 @@ mutation_files = {
 
 # Containers for all results
 all_scores = {}  # For heatmaps
+all_names = {}   # For sequence names
 avg_scores = {}  # For line plot
 
 # Run analysis for each file
@@ -61,21 +78,25 @@ for label, filename in mutation_files.items():
         continue
 
     output = run_metaclass(filename)
-    top20 = extract_top20_nrc(output)
+    top20, seq_names = extract_top20_nrc(output)
     all_scores[label] = top20
+    all_names[label] = seq_names
     avg_scores[label] = np.mean(top20)
 
+    # Create labels that combine rank and sequence name
+    y_labels = [f"#{i+1}: {name}" for i, name in enumerate(seq_names)]
+    
     # Plot heatmap for this mutation level
-    plt.figure(figsize=(8, 6))
+    plt.figure(figsize=(10, 8))
     sns.heatmap(
         np.array(top20).reshape(-1, 1),
         annot=True, fmt=".3f",
-        yticklabels=[f"#{i+1}" for i in range(20)],
+        yticklabels=y_labels,
         xticklabels=[label],
         cmap="coolwarm"
     )
     plt.title(f"Top 20 NRC Scores ({label} Mutation)")
-    plt.ylabel("Rank")
+    plt.ylabel("Rank: Sequence")
     plt.tight_layout()
     plt.savefig(f"heatmap_nrc_{label.replace('%', '')}.png")
 
