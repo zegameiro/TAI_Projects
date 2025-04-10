@@ -21,16 +21,18 @@ done
 
 # Part 2: Meta files with varying mutation rates (0-100%) for fixed random sequences
 echo "--- Generating meta files with varying mutation rates (0-100%) for fixed sequences ---"
-num_meta_files=5
+
+# Define mutation percentages properly as an array
+mutation_percentages=(0 1 5 10 15 20 25)
+# Set number of meta files based on mutation percentages length
+num_meta_files=${#mutation_percentages[@]}
+
 num_fixed_sequences=5 # Number of fixed random sequences to choose
 num_generated_sequences=30 # Number of new generated sequences per fixed sequence
 
 # Choose 5 random sequences once for all meta files in this part
 fixed_random_sequence_ids=$(shuf -i 1-"$num_db_samples" -n "$num_fixed_sequences")
 fixed_random_sequence_array=($fixed_random_sequence_ids)
-
-# Define mutation percentages properly as an array
-mutation_percentages=(0 1 5 10 15 25)
 
 # Get all original sequences first (do this only once)
 echo "Getting original sequences and generating random sequences..."
@@ -63,11 +65,11 @@ for i in $(seq 0 $((num_fixed_sequences - 1))); do
 done
 
 # Now create each meta file with different mutation rates
-for k in $(seq 1 "$num_meta_files"); do
-    # Access array element properly using index k-1
-    m_percent_int=${mutation_percentages[$((k - 1))]}
+for k in $(seq 0 $((num_meta_files - 1))); do
+    # Access array element properly using index k
+    m_percent_int=${mutation_percentages[$k]}
     m_percent_float=$(echo "scale=2; $m_percent_int / 100" | bc)
-    output_mutate="data/meta_varying_mutation_${k}.txt"
+    output_mutate="data/meta_varying_mutation_${m_percent_int}percent.txt"
     mkdir -p "$(dirname "$output_mutate")"
     > "$output_mutate"
 
