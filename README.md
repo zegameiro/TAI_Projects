@@ -78,4 +78,39 @@ Original sequence 1: @seq_43
 Original sequence 1: @seq_19
 Original sequence 1: @seq_14
 Original sequence 1: @seq_23
-Script finished.
+Script finished.Script finished.
+
+
+## Executables
+
+There are two Bash scripts located in the root of the project. Make them executable:
+
+```bash
+chmod +x run_meta.sh
+chmod +x generate_visualizations.sh
+```
+
+### Meta
+
+Run this using the following command:
+
+```bash
+./run_meta.sh
+```
+The script builds and runs the metaClass program using the following example arguments:
+
+- db.txt
+- meta.txt
+- k = 10
+- alpha = 0.01
+
+### Visualizations
+Run this using the following command:
+
+```bash
+./generate_visualizations.sh
+```
+
+This script is used to generate visualizations based on metaClass results. At the very beginning of the script, you'll see a warning and pause, instructing you to create a Python virtual environment. Once your virtual environment is active, you should comment out or remove the warning section in the script so it can continue.
+
+After that, the script will install dependencies at the virtual environment and run three Python scripts to generate different visual outputs
