@@ -63,6 +63,9 @@ With the following arguments:
 Some bash scripts are available in the `examples` folder to run the programs with some examples.
 
 
+# Second Project for the class of TAI 2024/2025
+At the second project, the goal was to develop a tool that applies NRC to identify the most similar organisms from a known reference database.
+
 ## Authors
 
 | Author | Percentage |
@@ -80,6 +83,14 @@ Original sequence 1: @seq_14
 Original sequence 1: @seq_23
 Script finished.
 
+## Dependencies
+- Rust and Cargo need to be installed.
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+- Python 3.8 or higher
+- Python libraries: `numpy`, `pandas`, `matplotlib`, `seaborn`, `plotly`, `plotly.express` (at requirements.txt)
+- Rust libraries: `serde`, `serde_json`, `bson`, `opencv`, `hound`, `regex` (at Cargo.toml)
 
 ## Executables
 
