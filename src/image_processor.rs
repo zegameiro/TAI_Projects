@@ -34,17 +34,104 @@ impl ImageProcessor{
         &self.images_list
     }
 
-    pub fn compute_nrc(&self, model: &FiniteContextModelImage) -> HashMap<String,f64> {
+    pub fn compute_ncr_multi_model(&self, models: &HashMap<u8,FiniteContextModelImage>,levels: u8) -> HashMap<String,f64> {
+        let mut aggregated_scores: HashMap<String, Vec<f64>> = HashMap::new();
+
+        for (k, model) in models.iter() {
+            let scores = self.compute_nrc(model, levels, *k);
+            for (image, score) in scores {
+                aggregated_scores
+                    .entry(image)
+                    .or_insert_with(Vec::new)
+                    .push(score);
+            }
+        }
+
+        // Agora computamos a média ponderada (média simples)
+        let mut nrc_scores: HashMap<String, f64> = HashMap::new();
+        for (image, scores) in aggregated_scores {
+            let sum: f64 = scores.iter().sum();
+            let mean = sum / scores.len() as f64;
+            nrc_scores.insert(image, mean);
+        }
+
+        nrc_scores
+    }
+
+    pub fn compute_weighted_nrc(&self, models: &HashMap<u8, FiniteContextModelImage>, levels: u8, gamma: f64) -> HashMap<String, f64> {
+        let mut nrc_scores = HashMap::new();
+    
+        for file in &self.images_list {
+            let mut image = imgcodecs::imread(file.as_str(), imgcodecs::IMREAD_GRAYSCALE).unwrap();
+            quantize_image(&mut image, levels);
+    
+            let rows = image.rows();
+            let cols = image.cols();
+    
+            let ks = vec![2, 4, 6];
+            let mut weights: HashMap<u8, f64> = ks.iter().map(|&k| (k, 1.0 / ks.len() as f64)).collect();
+    
+            let mut info_content = 0.0;
+    
+            for r in 0..rows {
+                for c in 0..cols {
+                    let mut probs = HashMap::new();
+                    let mut new_weights = HashMap::new();
+    
+                    let pixel = *image.at_2d::<u8>(r, c).unwrap();
+    
+                    let mut weight_sum = 0.0;
+    
+                    // Update weights and compute mixture probability
+                    for &k in &ks {
+                        let model = models.get(&k).unwrap();
+                        let context = model.get_context(r, c, &image, k);
+                        let prob = model.compute_probability(&context, pixel);
+                        probs.insert(k, prob);
+    
+                        let prev_weight = weights.get(&k).copied().unwrap_or(1.0 / ks.len() as f64);
+                        let new_weight = prev_weight.powf(gamma) * prob;
+                        new_weights.insert(k, new_weight);
+                        weight_sum += new_weight;
+                    }
+    
+                    // Normalize weights
+                    for w in new_weights.values_mut() {
+                        *w /= weight_sum;
+                    }                    
+    
+                    // Update weights for next iteration
+                    weights = new_weights;
+    
+                    // Compute final probability using weighted average
+                    let mixed_prob: f64 = ks.iter()
+                        .map(|&k| probs.get(&k).unwrap() * weights.get(&k).unwrap())
+                        .sum();
+    
+                    info_content += -mixed_prob.log2();
+                }
+            }
+    
+            let sequence_length = (rows * cols) as f64;
+            let normalized_info = info_content / ((levels as f64).log2() * sequence_length);
+            nrc_scores.insert(file.clone(), normalized_info);
+        }
+    
+        nrc_scores
+    }
+
+    pub fn compute_nrc(&self, model: &FiniteContextModelImage,levels: u8, k:u8 ) -> HashMap<String,f64> {
 
         let mut nrc_scores: HashMap<String, f64> = HashMap::new();
 
         for file in &self.images_list {
-            let image = imgcodecs::imread(file.as_str(), imgcodecs::IMREAD_GRAYSCALE).unwrap();
-            let compress_size = model.calculate_information_content(&image);
+            let mut image = imgcodecs::imread(file.as_str(), imgcodecs::IMREAD_GRAYSCALE).unwrap();
+            quantize_image(&mut image, levels);
+            let compress_size = model.calculate_information_content(&image,k);
             let size = image.size().unwrap();
             let sequence_length = (size.width * size.height) as f64;
             let nrc_score = if sequence_length > 0.0 {
-                compress_size / (2.0 * sequence_length)
+                compress_size / ((levels as f64).log2() * sequence_length)
             } else {
                 0.0
             };
@@ -53,5 +140,97 @@ impl ImageProcessor{
         }
 
         nrc_scores
+    }
+}
+
+pub fn quantize_image(img: &mut Mat,levels: u8){
+    let mut quantization_levels: Vec<f64> = (0..levels).map(|i| (i as f64) * (256.0 / (levels as f64))).collect();
+    let mut prev_quantization_levels = quantization_levels.clone(); // Initialize with the first quantization levels
+    
+    // Initialize iteration variables
+    let max_iterations = 100;
+    let tolerance = 1e-6;
+    
+    let rows = img.rows();
+    let cols = img.cols();
+    
+    let mut iteration = 0;
+    while iteration < max_iterations {
+        iteration += 1;
+
+        // Step 1: Assign each pixel to the closest quantization level
+        let mut assignments = vec![0; img.rows() as usize * img.cols() as usize];
+        
+        for r in 0..rows {
+            for c in 0..cols {
+                let pixel = *img.at_2d::<u8>(r, c).unwrap() as f64;
+                let mut min_dist = f64::MAX;
+                let mut assigned_level = 0;
+
+                for (i, &q) in quantization_levels.iter().enumerate() {
+                    let dist = (pixel - q).abs();
+                    if dist < min_dist {
+                        min_dist = dist;
+                        assigned_level = i;
+                    }
+                }
+
+                // Assign pixel to closest quantization level
+                assignments[(r * cols + c) as usize] = assigned_level;
+            }
+        }
+
+        // Step 2: Update quantization levels
+        let mut new_quantization_levels = vec![0.0; levels as usize];
+        let mut counts = vec![0; levels as usize];
+
+        for (i, &assignment) in assignments.iter().enumerate() {
+            let pixel = *img.at_2d::<u8>((i as i32 / cols) as i32, (i as i32 % cols) as i32).unwrap() as f64;
+            new_quantization_levels[assignment] += pixel;
+            counts[assignment] += 1;
+        }
+
+        // Calculate the mean for each quantization level
+        for (i, count) in counts.iter().enumerate() {
+            if *count > 0 {
+                new_quantization_levels[i] /= *count as f64;
+            }
+        }
+
+        // Step 3: Check for convergence
+        let max_change = new_quantization_levels.iter()
+            .zip(&prev_quantization_levels)
+            .map(|(new, old)| (new - old).abs())
+            .fold(0.0, f64::max);
+
+        if max_change < tolerance {
+            break;
+        }
+
+        // Update previous quantization levels for next iteration
+        prev_quantization_levels = new_quantization_levels.clone();
+
+        // Update current quantization levels
+        quantization_levels = new_quantization_levels;
+    }
+
+    // Step 4: Quantize the image
+    for r in 0..rows {
+        for c in 0..cols {
+            let pixel = *img.at_2d::<u8>(r, c).unwrap() as f64;
+            let mut min_dist = f64::MAX;
+            let mut assigned_level = 0;
+
+            for (i, &q) in quantization_levels.iter().enumerate() {
+                let dist = (pixel - q).abs();
+                if dist < min_dist {
+                    min_dist = dist;
+                    assigned_level = i;
+                }
+            }
+
+            // Assign the pixel the quantized value
+            *img.at_2d_mut::<u8>(r, c).unwrap() = quantization_levels[assigned_level] as u8;
+        }
     }
 }
