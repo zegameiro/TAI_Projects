@@ -59,9 +59,9 @@ def extract_top20_nrc(output):
 # Mutation-level files
 mutation_files = {
     "0%": "../data/meta_varying_mutation_0.txt",
-    "25%": "../data/meta_varying_mutation_25.txt",
-    "50%": "../data/meta_varying_mutation_50.txt",
-    "75%": "../data/meta_varying_mutation_75.txt",
+    "25%": "../data/meta_varying_mutation_5.txt",
+    "50%": "../data/meta_varying_mutation_10.txt",
+    "75%": "../data/meta_varying_mutation_15.txt",
     "100%": "../data/meta_varying_mutation_100.txt"
 }
 
