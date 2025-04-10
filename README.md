@@ -78,7 +78,7 @@ Original sequence 1: @seq_43
 Original sequence 1: @seq_19
 Original sequence 1: @seq_14
 Original sequence 1: @seq_23
-Script finished.Script finished.
+Script finished.
 
 
 ## Executables
