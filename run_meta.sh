@@ -1,8 +1,8 @@
 #!/bin/bash
 
-cargo build --release
+cargo build
 
-EXECUTABLE="target/release/metaClass"
+EXECUTABLE="target/debug/metaClass"
 
 DB_FILE="data/db.txt"
 META_FILE="data/meta.txt"
