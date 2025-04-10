@@ -30,8 +30,39 @@ fixed_random_sequence_ids=$(shuf -i 1-"$num_db_samples" -n "$num_fixed_sequences
 fixed_random_sequence_array=($fixed_random_sequence_ids)
 
 # Define mutation percentages properly as an array
-mutation_percentages=(0 25 50 75 100)
+mutation_percentages=(0 1 5 10 15 25)
 
+# Get all original sequences first (do this only once)
+echo "Getting original sequences and generating random sequences..."
+declare -a original_sequences
+declare -a seq_headers
+declare -a random_sequences
+
+for i in $(seq 0 $((num_fixed_sequences - 1))); do
+    seq_id="${fixed_random_sequence_array[$i]}"
+    
+    seq_header=$(awk -v id="@seq_$seq_id" '
+        $0 ~ id {print; exit}
+    ' data/db_test.txt)
+    
+    seq_full=$(awk -v id="@seq_$seq_id" '
+        $0 ~ id {flag=1; next}
+        /^@/ {flag=0}
+        flag {printf "%s", $0}
+    ' data/db_test.txt)
+    
+    original_sequences[$i]="$seq_full"
+    seq_headers[$i]="$seq_header"
+    
+    # Generate random sequences once (for all mutation files)
+    for j in $(seq 1 "$num_generated_sequences"); do
+        rand_seq_index=$((i * num_generated_sequences + j - 1))
+        new_seed_rand=$((RANDOM + 10#$(date +%N) + i * 100 + j))
+        random_sequences[$rand_seq_index]=$(gto_genomic_gen_random_dna -s "$new_seed_rand" -n 151)
+    done
+done
+
+# Now create each meta file with different mutation rates
 for k in $(seq 1 "$num_meta_files"); do
     # Access array element properly using index k-1
     m_percent_int=${mutation_percentages[$((k - 1))]}
@@ -42,55 +73,34 @@ for k in $(seq 1 "$num_meta_files"); do
 
     echo "Generating meta file: $output_mutate with ${m_percent_int}% mutation rate (float: $m_percent_float)..."
 
+    # For each original sequence
     for i in $(seq 0 $((num_fixed_sequences - 1))); do
-        seq_id="${fixed_random_sequence_array[$i]}"
-
-        seq_header=$(awk -v id="@seq_$seq_id" '
-            $0 ~ id {print; exit}
-        ' data/db_test.txt)
-
-        seq_full=$(awk -v id="@seq_$seq_id" '
-            $0 ~ id {flag=1; next}
-            /^@/ {flag=0}
-            flag {printf "%s", $0}
-        ' data/db_test.txt)
-
-        # Use the entire sequence for mutation
-        original_sequence="$seq_full"
-
-        echo "Original Sequence (from $seq_header): $original_sequence" >> "$output_mutate"
-
-        # Mutate the original sequence
-        new_seed_mutate=$((RANDOM + 10#$(date +%N) + k * 100 + i ))
+        original_sequence="${original_sequences[$i]}"
+        
+        # Mutate the original sequence with current percentage
+        new_seed_mutate=$((RANDOM + 10#$(date +%N) + k * 100 + i))
         mutated_sequence=$(echo "$original_sequence" | gto_genomic_dna_mutate -s "$new_seed_mutate" -m "$m_percent_float" | tr -d '\n')
-        echo "Mutated Sequence (at ${m_percent_int}%): $mutated_sequence" >> "$output_mutate"
-
-        # Generate new random sequences
+        
+        # Write just the sequence without prefix
+        echo "$mutated_sequence" | fold -w 121 >> "$output_mutate"
+        echo "" >> "$output_mutate"
+        
+        # Write all associated random sequences without prefixes
         for j in $(seq 1 "$num_generated_sequences"); do
-            # Choose a random sequence ID from the database for the seed
-            random_seq_id=$(shuf -i 1-"$num_db_samples" -n 1)
-            random_seq_header=$(awk -v id="@seq_$random_seq_id" '
-                $0 ~ id {print; exit}
-            ' data/db_test.txt)
-
-            random_seq_full=$(awk -v id="@seq_$random_seq_id" '
-                $0 ~ id {flag=1; next}
-                /^@/ {flag=0}
-                flag {printf "%s", $0}
-            ' data/db_test.txt)
-
-            random_seed_sequence=$(echo "$random_seq_full" | cut -c1-151)
-
-            # Generate a new random sequence based on the chosen random seed
-            new_seed_rand=$((RANDOM + 10#$(date +%N) + k * 1000 + i * 100 + j ))
-            random_generated_sequence=$(echo "$random_seed_sequence" | gto_genomic_gen_random_dna -s "$new_seed_rand" -n 151)
-            echo "Generated Sequence #$j (based on $random_seq_header): $random_generated_sequence" >> "$output_mutate"
+            rand_seq_index=$((i * num_generated_sequences + j - 1))
+            echo "${random_sequences[$rand_seq_index]}" | fold -w 121 >> "$output_mutate"
+            echo "" >> "$output_mutate"
         done
-        echo "" >> "$output_mutate" # Separator
     done
 
     echo "Finished generating meta file: $output_mutate"
     echo ""
+done
+
+# Print summary of sequences used
+echo "=== Sequences used in this experiment ==="
+for i in $(seq 0 $((num_fixed_sequences - 1))); do
+    echo "Original sequence ${i+1}: ${seq_headers[$i]}"
 done
 
 echo "Script finished."
