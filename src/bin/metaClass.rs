@@ -142,7 +142,7 @@ fn main(){
 
     let generator: ChartGenerator = ChartGenerator::new(alpha as f32, 4.0);
 
-    if let Err(e) = generator.draw_complexity_profiles(profiles, "complexity_profiles.png") {
+    if let Err(e) = generator.draw_complexity_profiles(profiles, "visualizations/complexity_profiles.png") {
         eprintln!("Failed to draw complexity profiles: {}", e);
     }
 

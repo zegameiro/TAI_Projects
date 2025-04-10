@@ -39,12 +39,15 @@ def extract_top20_nrc(output):
         scores.append(0.0)
     return scores
 
+VISUALIZATIONS_DIR = "../visualizations/"
 # Heatmap 1: Varying k (fixed alpha)
 k_values = [2, 4, 6, 8, 10, 12, 14, 16]
 alpha_fixed = 0.01
 
 top20_matrix_k = []
+print(f"\nRunning MetaClass with fixed alpha = {alpha_fixed}")
 for k in k_values:
+    print(f"\tfor k = {k}")
     output = run_metaclass(k, alpha_fixed)
     top20 = extract_top20_nrc(output)
     top20_matrix_k.append(top20)
@@ -57,15 +60,17 @@ plt.title(f"Top 20 NRC Scores per k (α = {alpha_fixed})")
 plt.xlabel("k")
 plt.ylabel("Rank")
 plt.tight_layout()
-plt.savefig("heatmap_top20_k.png")
-plt.show()
+plt.savefig(VISUALIZATIONS_DIR + "heatmap_top20_k.png")
+# plt.show()
 
 # Heatmap 2: Varying alpha (fixed k)
 alpha_values = [0.001, 0.005, 0.01, 0.05, 0.1, 0.2, 0.3, 0.5]
 k_fixed = 10
 
 top20_matrix_alpha = []
+print(f"\nRunning MetaClass with fixed k = {k_fixed}")
 for alpha in alpha_values:
+    print(f"\tfor alpha = {alpha}")
     output = run_metaclass(k_fixed, alpha)
     top20 = extract_top20_nrc(output)
     top20_matrix_alpha.append(top20)
@@ -78,5 +83,5 @@ plt.title(f"Top 20 NRC Scores per α (k = {k_fixed})")
 plt.xlabel("α")
 plt.ylabel("Rank")
 plt.tight_layout()
-plt.savefig("heatmap_top20_alpha.png")
-plt.show()
+plt.savefig(VISUALIZATIONS_DIR + "heatmap_top20_alpha.png")
+# plt.show()

@@ -104,10 +104,7 @@ impl ChartGenerator {
                 .max()
                 .unwrap_or(100);
 
-            let max_val = profiles_in_group
-                .iter()
-                .flat_map(|(_, p)| p.iter().cloned())
-                .fold(0f64, f64::max);
+            let max_val = 4.0;
 
             let mut chart = ChartBuilder::on(&area)
                 .margin(10)
