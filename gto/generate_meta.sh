@@ -30,7 +30,7 @@ fixed_random_sequence_ids=$(shuf -i 1-"$num_db_samples" -n "$num_fixed_sequences
 fixed_random_sequence_array=($fixed_random_sequence_ids)
 
 # Define mutation percentages properly as an array
-mutation_percentages=(0 25 50 75 100)
+mutation_percentages=(0 5 10 15 25)
 
 # Get all original sequences first (do this only once)
 echo "Getting original sequences and generating random sequences..."
