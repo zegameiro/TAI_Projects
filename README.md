@@ -73,4 +73,9 @@ Some bash scripts are available in the `examples` folder to run the programs wit
 
 
 ## Sequences used
-seq 47, 7, 39, 3, 49
+Original sequence 1: @seq_48
+Original sequence 1: @seq_43
+Original sequence 1: @seq_19
+Original sequence 1: @seq_14
+Original sequence 1: @seq_23
+Script finished.
