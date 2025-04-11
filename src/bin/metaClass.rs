@@ -68,7 +68,7 @@ fn main(){
     }
 
     let mut file_reader_struct = file_reader::FileReader{
-        filename: String::from(meta_file_path),
+        filename: String::from(meta_file_path.clone()),
         reader: None,
         buffer: Vec::new(),
     };
@@ -80,6 +80,8 @@ fn main(){
 
     use std::time::Instant;
     let now = Instant::now();
+
+    println!("Reading file metagenomic sample in file {} and training model...", &meta_file_path);
 
     let mut model = FiniteContextModel::new(k, alpha);
     let mut metagonic_sample = String::new();
@@ -103,8 +105,11 @@ fn main(){
 
     let elapsed = now.elapsed();
 
+    println!("Reading file database in file {} and computing NRC scores...", &database_file_path);
     let data_processor = DataBaseProcessor::new(database_file_path.to_string());
     let mut nrc_scores: Vec<_> = data_processor.compute_nrc(&model).into_iter().collect();
+
+    println!("NRC scores computed\nSorting NRC scores...");
 
     let elapsed_nrc = now.elapsed();
 
@@ -124,12 +129,16 @@ fn main(){
 
     let low_score_names: Vec<String> = low_scores.iter().map(|(name, _)| name.clone()).collect();
 
+    println!("\nObtained sequences with NRC scores lower than {}:", treshold);
+
+    println!("\nComputing Similarity Matrix with {} sequences...", low_score_names.len());
     let results: Vec<ComparisionResult> = data_processor.comparative_nrc_analysis(&low_score_names, k, alpha);
     let output_file = "comparative_nrc_results.json";
     let _ = data_processor.export_nrc_comparisons_to_json(&results, output_file);
+    println!("Similarity matrix saved to {}", output_file);
 
+    println!("\nGenerating complexity profiles for metagenomic sample and sequences with NRC scores lower than {} ...", treshold);
     let mut profiles: Vec<(&str, Vec<f64>)> = Vec::new();
-
     let meta_profile = model.complexity_profile(&metagonic_sample);
     profiles.push(("meta", meta_profile));
 
@@ -142,9 +151,11 @@ fn main(){
 
     let generator: ChartGenerator = ChartGenerator::new(alpha as f32, 4.0);
 
+    println!("Complexity profiles obtained\nDrawing complexity profiles...");
     if let Err(e) = generator.draw_complexity_profiles(profiles, "visualizations/complexity_profiles.png") {
         eprintln!("Failed to draw complexity profiles: {}", e);
     }
+    println!("Complexity profiles saved to visualizations/complexity_profiles.png");
 
     println!("\nTime taken to train the model: {:?}", elapsed);
     println!("Time taken to compute NRC scores: {:?}", elapsed_nrc - elapsed);

@@ -62,8 +62,10 @@ With the following arguments:
 #### Examples
 Some bash scripts are available in the `examples` folder to run the programs with some examples.
 
+---
 
 # Second Project for the class of TAI 2024/2025
+
 At the second project, the goal was to develop a tool that applies NRC to identify the most similar organisms from a known reference database.
 
 ## Authors
@@ -114,3 +116,8 @@ The script builds and runs the metaClass program using the following example arg
 - meta.txt
 - k = 10
 - alpha = 0.01
+
+## Report
+
+The report can be found in this [location](/docs/assignment_2/TAI_Report_2.pdf).
+The demo for the project can be found in this [location](/docs/assignment_2/tai_demo_2nd_assignment.mp4).
