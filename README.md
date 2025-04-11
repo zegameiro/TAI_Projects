@@ -1,5 +1,23 @@
 # Projects for the class of TAI 2024/2025
 
+## Table of Contents
+- [First Project](#first-project)
+  - [Dependencies](#dependencies)
+  - [Compile and Executing](#compile-and-executing)
+    - [Compile the project](#compile-the-project)
+    - [Run fcm](#run-fcm)
+    - [Run generator](#run-generator)
+    - [Run chart generator](#run-chart-generator)
+    - [Examples](#examples)
+  - [Important notes](#important-notes)
+- [Second Project](#second-project)
+  - [Dependencies](#dependencies-1)
+  - [Executables](#executables)
+  - [Compiling and executing](#compiling-and-executing)
+  - [Important Notes](#important-notes-1)
+- [Authors](#authors)
+- [Project Structure](#project-structure)
+
 ---
 
 ## First Project
