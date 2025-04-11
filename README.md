@@ -119,6 +119,35 @@ The script builds and runs the metaClass program using the following example arg
 - k = 10
 - alpha = 0.01
 
+### Compiling and executing
+
+To compile the project, you need to run the following command at the root of the project:
+```bash
+cargo build
+```
+After this, executables will be available in the `target/debug` folder.
+To run the metaClass program, you need to run the following command at the root of the project:
+```bash
+target/debug/metaClass -d {db_file} -s {meta_file} -k {k} -a {alpha}
+```
+
+The following arguments can/need to be passed:
+```bash
+Usage:
+  ./target/debug/metaClass [OPTIONS]
+
+Algorithmic Theory of Information Second Project
+
+Optional arguments:
+  -h,--help             Show this help message and exit
+  -s   Path to the meta file (required)
+  -d   Path to the database file (required)
+  -k   Size of the sliding window (default: 3, must be 1 <= k <= 100)
+  -a   Smoothing parameter (default: 0.01, must be 0 <= alpha <= 1)
+  -t   Number of top sequences to display (default: 20, must be 1 <= top_sequences <= 239)
+  -l   Threshold for low scores (default: 0.5, must be 0 <= low_score <= 1)
+```
+
 ### Important Notes
 
 - The report can be found in this [location](/docs/assignment_2/TAI_Report_2.pdf).
