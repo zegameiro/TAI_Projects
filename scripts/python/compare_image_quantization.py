@@ -34,7 +34,4 @@ plt.ylim(0, max(images) + 1.5)
 plt.tight_layout()
 
 # Save the figure
-plt.savefig('quantization_vs_images.png', dpi=300)
-
-# Show the plot
-plt.show()
+plt.savefig('../../visualizations/quantization_vs_images.png', dpi=300)

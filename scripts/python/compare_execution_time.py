@@ -1,15 +1,12 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-VISUALIZATIONS_DIR = "../visualizations/"
+VISUALIZATIONS_DIR = "../../visualizations/"
 
-# Load your data
-df = pd.read_csv("../tests/meta_results_release.csv")  # Or use pd.read_clipboard() if pasted
+df = pd.read_csv("../../tests/meta_results_release.csv")
 
-# Convert alpha to string for better axis labeling
 df['alpha_str'] = df['alpha'].astype(str)
 
-# --- 1. Line Plots ---
 plt.figure(figsize=(12, 6))
 print("\nGenerating line plots...")
 for metric in ['train_time', 'nrc_time', 'total_time']:

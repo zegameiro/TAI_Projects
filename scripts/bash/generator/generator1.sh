@@ -1,8 +1,8 @@
 #!/bin/bash
 
-EXECUTABLE="target/debug/generator"
+EXECUTABLE="../../../target/debug/generator"
 
-FILE="sequences/sequence1.txt"
+FILE="../../../data/sequences/sequence1.txt"
 K=3
 ALPHA=0.01
 PRIOR="ACTG"

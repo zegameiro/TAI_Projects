@@ -1,0 +1,44 @@
+../../../target/release/image -i ../../../data/images/1_1.jpg -d ../../../data/images >> image_results/1.txt
+../../../target/release/image -i ../../../data/images/11_2.jpg -d ../../../data/images >> image_results/2.txt
+../../../target/release/image -i ../../../data/images/21_3.jpg -d ../../../data/images >> image_results/3.txt
+../../../target/release/image -i ../../../data/images/31_4.jpg -d ../../../data/images >> image_results/4.txt
+../../../target/release/image -i ../../../data/images/41_5.jpg -d ../../../data/images >> image_results/5.txt
+../../../target/release/image -i ../../../data/images/51_6.jpg -d ../../../data/images >> image_results/6.txt
+../../../target/release/image -i ../../../data/images/61_7.jpg -d ../../../data/images >> image_results/7.txt
+../../../target/release/image -i ../../../data/images/71_8.jpg -d ../../../data/images >> image_results/8.txt
+../../../target/release/image -i ../../../data/images/81_9.jpg -d ../../../data/images >> image_results/9.txt
+../../../target/release/image -i ../../../data/images/91_10.jpg -d ../../../data/images >> image_results/10.txt
+../../../target/release/image -i ../../../data/images/101_11.jpg -d ../../../data/images >> image_results/11.txt
+../../../target/release/image -i ../../../data/images/111_12.jpg -d ../../../data/images >> image_results/12.txt
+../../../target/release/image -i ../../../data/images/121_13.jpg -d ../../../data/images >> image_results/13.txt
+../../../target/release/image -i ../../../data/images/131_14.jpg -d ../../../data/images >> image_results/14.txt
+../../../target/release/image -i ../../../data/images/141_15.jpg -d ../../../data/images >> image_results/15.txt
+../../../target/release/image -i ../../../data/images/151_16.jpg -d ../../../data/images >> image_results/16.txt
+../../../target/release/image -i ../../../data/images/161_17.jpg -d ../../../data/images >> image_results/17.txt
+../../../target/release/image -i ../../../data/images/171_18.jpg -d ../../../data/images >> image_results/18.txt
+../../../target/release/image -i ../../../data/images/181_19.jpg -d ../../../data/images >> image_results/19.txt
+../../../target/release/image -i ../../../data/images/191_20.jpg -d ../../../data/images >> image_results/20.txt
+../../../target/release/image -i ../../../data/images/201_21.jpg -d ../../../data/images >> image_results/21.txt
+../../../target/release/image -i ../../../data/images/211_22.jpg -d ../../../data/images >> image_results/22.txt
+../../../target/release/image -i ../../../data/images/221_23.jpg -d ../../../data/images >> image_results/23.txt
+../../../target/release/image -i ../../../data/images/231_24.jpg -d ../../../data/images >> image_results/24.txt
+../../../target/release/image -i ../../../data/images/241_25.jpg -d ../../../data/images >> image_results/25.txt
+../../../target/release/image -i ../../../data/images/251_26.jpg -d ../../../data/images >> image_results/26.txt
+../../../target/release/image -i ../../../data/images/261_27.jpg -d ../../../data/images >> image_results/27.txt
+../../../target/release/image -i ../../../data/images/271_28.jpg -d ../../../data/images >> image_results/28.txt
+../../../target/release/image -i ../../../data/images/281_29.jpg -d ../../../data/images >> image_results/29.txt
+../../../target/release/image -i ../../../data/images/291_30.jpg -d ../../../data/images >> image_results/30.txt
+../../../target/release/image -i ../../../data/images/301_31.jpg -d ../../../data/images >> image_results/31.txt
+../../../target/release/image -i ../../../data/images/311_32.jpg -d ../../../data/images >> image_results/32.txt
+../../../target/release/image -i ../../../data/images/321_33.jpg -d ../../../data/images >> image_results/33.txt
+../../../target/release/image -i ../../../data/images/331_34.jpg -d ../../../data/images >> image_results/34.txt
+../../../target/release/image -i ../../../data/images/341_35.jpg -d ../../../data/images >> image_results/35.txt
+../../../target/release/image -i ../../../data/images/351_36.jpg -d ../../../data/images >> image_results/36.txt
+../../../target/release/image -i ../../../data/images/361_37.jpg -d ../../../data/images >> image_results/37.txt
+../../../target/release/image -i ../../../data/images/371_38.jpg -d ../../../data/images >> image_results/38.txt
+../../../target/release/image -i ../../../data/images/381_39.jpg -d ../../../data/images >> image_results/39.txt
+../../../target/release/image -i ../../../data/images/391_40.jpg -d ../../../data/images >> image_results/40.txt
+../../../target/release/image -i ../../../data/images/401_41.jpg -d ../../../data/images >> image_results/41.txt
+
+
+

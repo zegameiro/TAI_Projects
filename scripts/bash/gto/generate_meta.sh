@@ -2,7 +2,7 @@
 
 mkdir -p data
 
-output_db="data/db_test.txt"
+output_db="../../../data/generated/db_test.txt"
 > "$output_db"
 
 num_db_samples=50
@@ -69,7 +69,7 @@ for k in $(seq 0 $((num_meta_files - 1))); do
     # Access array element properly using index k
     m_percent_int=${mutation_percentages[$k]}
     m_percent_float=$(echo "scale=2; $m_percent_int / 100" | bc)
-    output_mutate="data/meta_varying_mutation_${m_percent_int}percent.txt"
+    output_mutate="../../../data/generated/meta_varying_mutation_${m_percent_int}percent.txt"
     mkdir -p "$(dirname "$output_mutate")"
     > "$output_mutate"
 

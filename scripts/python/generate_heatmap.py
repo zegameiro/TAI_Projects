@@ -6,7 +6,7 @@ import seaborn as sns
 def run_metaclass(k, alpha):
     try:
         result = subprocess.run(
-            ["../target/debug/metaClass", "-d", "../data/db.txt", "-s", "../data/meta.txt", "-k", str(k), "-a", str(alpha), "-t", "20"],
+            ["../../target/debug/metaClass", "-d", "../../data/db.txt", "-s", "../../data/meta.txt", "-k", str(k), "-a", str(alpha), "-t", "20"],
             capture_output=True,
             text=True,
             check=True
@@ -39,7 +39,7 @@ def extract_top20_nrc(output):
         scores.append(0.0)
     return scores
 
-VISUALIZATIONS_DIR = "../visualizations/"
+VISUALIZATIONS_DIR = "../../visualizations/"
 # Heatmap 1: Varying k (fixed alpha)
 k_values = [2, 4, 6, 8, 10, 12, 14, 16]
 alpha_fixed = 0.01
@@ -61,7 +61,6 @@ plt.xlabel("k")
 plt.ylabel("Rank")
 plt.tight_layout()
 plt.savefig(VISUALIZATIONS_DIR + "heatmap_top20_k.png")
-# plt.show()
 
 # Heatmap 2: Varying alpha (fixed k)
 alpha_values = [0.001, 0.005, 0.01, 0.05, 0.1, 0.2, 0.3, 0.5]
@@ -84,4 +83,3 @@ plt.xlabel("α")
 plt.ylabel("Rank")
 plt.tight_layout()
 plt.savefig(VISUALIZATIONS_DIR + "heatmap_top20_alpha.png")
-# plt.show()

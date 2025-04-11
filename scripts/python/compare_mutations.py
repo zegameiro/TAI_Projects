@@ -8,7 +8,7 @@ import pandas as pd
 def run_metaclass(meta_file, k=10, alpha=0.01):
     try:
         result = subprocess.run(
-            ["../target/debug/metaClass", "-d", "../data/db_test.txt", "-s", meta_file, "-k", str(k), "-a", str(alpha), "-t", "20"],
+            ["../../target/debug/metaClass", "-d", "../../data/db_test.txt", "-s", meta_file, "-k", str(k), "-a", str(alpha), "-t", "20"],
             capture_output=True,
             text=True,
             check=True
@@ -57,17 +57,17 @@ def extract_top20_nrc(output):
         
     return scores, seq_names
 
-VISUALIZATIONS_DIR = "../visualizations/"
+VISUALIZATIONS_DIR = "../../visualizations/"
 
 # Mutation-level files
 mutation_files = {
-    "0%": "../data/meta_varying_mutation_0percent.txt",
-    "1%": "../data/meta_varying_mutation_1percent.txt",
-    "5%": "../data/meta_varying_mutation_5percent.txt",
-    "10%": "../data/meta_varying_mutation_10percent.txt",
-    "15%": "../data/meta_varying_mutation_15percent.txt",
-    "20%": "../data/meta_varying_mutation_20percent.txt",
-    "25%": "../data/meta_varying_mutation_25percent.txt"
+    "0%": "../../data/meta_varying_mutation_0percent.txt",
+    "1%": "../../data/meta_varying_mutation_1percent.txt",
+    "5%": "../../data/meta_varying_mutation_5percent.txt",
+    "10%": "../../data/meta_varying_mutation_10percent.txt",
+    "15%": "../../data/meta_varying_mutation_15percent.txt",
+    "20%": "../../data/meta_varying_mutation_20percent.txt",
+    "25%": "../../data/meta_varying_mutation_25percent.txt"
 }
 
 # Containers for all results
@@ -79,7 +79,7 @@ avg_scores = {}  # For line plot
 for label, filename in mutation_files.items():
     print(f"Processing {label} mutation: {filename}")
     if not os.path.exists(filename):
-        print(f"❌ File not found: {filename}")
+        print(f"File not found: {filename}")
         continue
 
     output = run_metaclass(filename)

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-OUTPUT_FILE="tests/meta_results_debug.csv"
+OUTPUT_FILE="../../tests/meta_results_debug.csv"
 # OUTPUT_FILE="tests/meta_results_release.csv"
 
 echo "k,alpha,train_time,nrc_time,total_time" > $OUTPUT_FILE
@@ -27,7 +27,7 @@ for alpha in "${alpha_values[@]}"; do
     for k in {1..20}; do
         echo "Running with k=$k, alpha=$alpha"
         
-        output=$(./target/debug/metaClass -s data/meta.txt -d data/db.txt -k $k -a $alpha)
+        output=$(./target/debug/metaClass -s ../../data/meta.txt -d ../../data/db.txt -k $k -a $alpha)
         # output=$(./target/release/metaClass -s data/meta.txt -d data/db.txt -k $k -a $alpha)
         
         train_line=$(echo "$output" | grep "Time taken to train the model")
