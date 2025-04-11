@@ -74,20 +74,19 @@ At the second project, the goal was to develop a tool that applies NRC to identi
 | José Gameiro | 1/3 |
 | Tomás Victal | 1/3 |
 
-
-## Sequences used
-Original sequence 1: @seq_48
-Original sequence 1: @seq_43
-Original sequence 1: @seq_19
-Original sequence 1: @seq_14
-Original sequence 1: @seq_23
-Script finished.
-
 ## Dependencies
-- Rust and Cargo need to be installed.
+- Rust, Cargo and [OpenCV](https://opencv.org/get-started/) need to be installed.
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
+- argparse, version 0.2.2
+- plotters, version 0.3.7
+- rand, version 0.9.0
+- serde, version 1.0 and an additional feature called derive
+- serde_json, version 1.0.139
+- bson, version 2.0
+- opencv, version 0.94.4
+- regex, version 1.11.1
 - Python 3.8 or higher
 - Python libraries: `numpy`, `pandas`, `matplotlib`, `seaborn`, `plotly`, `plotly.express` (at requirements.txt)
 - Rust libraries: `serde`, `serde_json`, `bson`, `opencv`, `hound`, `regex` (at Cargo.toml)
@@ -97,8 +96,8 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 There are two Bash scripts located in the root of the project. Make them executable:
 
 ```bash
+cd scripts/bash/
 chmod +x run_meta.sh
-chmod +x generate_visualizations.sh
 ```
 
 ### Meta
@@ -106,6 +105,7 @@ chmod +x generate_visualizations.sh
 Run this using the following command:
 
 ```bash
+cd scripts/bash/
 ./run_meta.sh
 ```
 The script builds and runs the metaClass program using the following example arguments:
@@ -114,14 +114,3 @@ The script builds and runs the metaClass program using the following example arg
 - meta.txt
 - k = 10
 - alpha = 0.01
-
-### Visualizations
-Run this using the following command:
-
-```bash
-./generate_visualizations.sh
-```
-
-This script is used to generate visualizations based on metaClass results. At the very beginning of the script, you'll see a warning and pause, instructing you to create a Python virtual environment. Once your virtual environment is active, you should comment out or remove the warning section in the script so it can continue.
-
-After that, the script will install dependencies at the virtual environment and run three Python scripts to generate different visual outputs
