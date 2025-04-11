@@ -1,6 +1,15 @@
-# First Project for the class of TAI 2024/2025
+# Projects for the class of TAI 2024/2025
 
-## Instructions
+---
+
+## First Project
+
+This project consists on the development of two main components:
+
+- **fcm**: a program that measures the information content of text provided using a learned finite-context model
+- **generator**: a text generator that creates text following depending on a model created
+Both programs read a text file and train a finite-context model before execution of their main
+roles.
 
 ### Dependencies
 
@@ -8,13 +17,13 @@
 - plotters, version 0.3.7
 - rand , version 0.9.0
 
-#### Rust
+##### Rust
 Rust and Cargo need to be installed.
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
-### Run the programs
+### Compile and Executing
 
 #### Compile the project
 To compile the project, you need to run the following command at the root of the project:
@@ -62,25 +71,25 @@ With the following arguments:
 #### Examples
 Some bash scripts are available in the `examples` folder to run the programs with some examples.
 
+### Important notes
+
+- The report can be found in this [location](/docs/assignment_1/report_107162_108840_109018.pdf).
+- All the visualizations created for this project are in the [visualizations folder](/visualizations/).
+
 ---
 
-# Second Project for the class of TAI 2024/2025
+## Second Project
 
-At the second project, the goal was to develop a tool that applies NRC to identify the most similar organisms from a known reference database.
+In this project, we explore the potential to identify the types of organisms present in a metagenomic sample by comparing their similarity to multiple known reference sequences. To achieve this, we use Normalized Relative Compression (NRC) with a finite-context model. The implementation follows a methodology that compares one sample against multiple references in a database file. The tool begins by training a finite-context model using the sample, and then computes the NRC value for each sequence of DNA in the database. Based on these values, we rank the top candidate matches the sample.
 
-## Authors
+### Dependencies
 
-| Author | Percentage |
-| :--: | :--: |
-| Guilherme Amorim | 1/3 |
-| José Gameiro | 1/3 |
-| Tomás Victal | 1/3 |
-
-## Dependencies
 - Rust, Cargo and [OpenCV](https://opencv.org/get-started/) need to be installed.
+
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
+
 - argparse, version 0.2.2
 - plotters, version 0.3.7
 - rand, version 0.9.0
@@ -93,23 +102,16 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 - Python libraries: `numpy`, `pandas`, `matplotlib`, `seaborn`, `plotly`, `plotly.express` (at requirements.txt)
 - Rust libraries: `serde`, `serde_json`, `bson`, `opencv`, `hound`, `regex` (at Cargo.toml)
 
-## Executables
+### Executables
 
-There are two Bash scripts located in the root of the project. Make them executable:
+There is one Bash script in this [location](/scripts/bash/run_meta.sh). To execute it follow these commands:
 
 ```bash
 cd scripts/bash/
 chmod +x run_meta.sh
-```
-
-### Meta
-
-Run this using the following command:
-
-```bash
-cd scripts/bash/
 ./run_meta.sh
 ```
+
 The script builds and runs the metaClass program using the following example arguments:
 
 - db.txt
@@ -117,7 +119,126 @@ The script builds and runs the metaClass program using the following example arg
 - k = 10
 - alpha = 0.01
 
-## Report
+### Important Notes
 
-The report can be found in this [location](/docs/assignment_2/TAI_Report_2.pdf).
-The demo for the project can be found in this [location](/docs/assignment_2/tai_demo_2nd_assignment.mp4).
+- The report can be found in this [location](/docs/assignment_2/TAI_Report_2.pdf).
+- The demo for the project can be found in this [location](/docs/assignment_2/tai_demo_2nd_assignment.mp4).
+- All the visualizations created for this project are in the [visualizations folder](/visualizations/).
+
+## Authors
+
+| Author | Percentage |
+| :--: | :--: |
+| Guilherme Amorim | 1/3 |
+| José Gameiro | 1/3 |
+| Tomás Victal | 1/3 |
+
+## Project Structure
+
+```bash
+.
+├── Cargo.toml
+├── data
+│   ├── db.txt
+│   ├── generated
+│   │   ├── db_test.txt
+│   │   ├── meta_varying_mutation_0percent.txt
+│   │   ├── meta_varying_mutation_10percent.txt
+│   │   ├── meta_varying_mutation_15percent.txt
+│   │   ├── meta_varying_mutation_1percent.txt
+│   │   ├── meta_varying_mutation_20percent.txt
+│   │   ├── meta_varying_mutation_25percent.txt
+│   │   └── meta_varying_mutation_5percent.txt
+│   ├── meta.txt
+│   └── sequences
+│       ├── sequence1.txt
+│       ├── sequence2.txt
+│       ├── sequence3.txt
+│       ├── sequence4.txt
+│       ├── sequence5.txt
+│       ├── sequence6.txt
+│       ├── sequence7.txt
+│       └── test_sequence.txt
+├── docs
+│   ├── assignment_1
+│   │   ├── report_107162_108840_109018.pdf
+│   │   └── TAI_WORK_1_2024_2025_RC.pdf
+│   └── assignment_2
+│       ├── tai_demo_2nd_assignment.mp4
+│       ├── TAI_Report_2.pdf
+│       └── TAI_WORK_2_2024_2025_RC.pdf
+├── LICENSE
+├── README.md
+├── scripts
+│   ├── bash
+│   │   ├── comparative_nrc_results.json
+│   │   ├── fcm
+│   │   │   ├── fcm1.sh
+│   │   │   ├── fcm2.sh
+│   │   │   ├── fcm3.sh
+│   │   │   ├── fcm4.sh
+│   │   │   └── fcm5.sh
+│   │   ├── generate_meta.sh
+│   │   ├── generator
+│   │   │   ├── generator1.sh
+│   │   │   ├── generator2_mode_words.sh
+│   │   │   ├── generator2.sh
+│   │   │   ├── generator3.sh
+│   │   │   ├── generator4.sh
+│   │   │   └── generator5.sh
+│   │   ├── gto
+│   │   │   └── generate_meta.sh
+│   │   ├── image_results
+│   │   │   ├── samples_images_quant.sh
+│   │   │   └── samples_images.sh
+│   │   └── run_meta.sh
+│   └── python
+│       ├── compare_execution_time.py
+│       ├── compare_image_quantization.py
+│       ├── compare_mutations.py
+│       ├── compare_nrc_scores.py
+│       ├── generate_heatmap.py
+│       └── requirements.txt
+├── src
+│   ├── bin
+│   │   ├── charts.rs
+│   │   ├── fcm.rs
+│   │   ├── generator.rs
+│   │   ├── image.rs
+│   │   └── metaClass.rs
+│   ├── chart_generator.rs
+│   ├── data_base_processor.rs
+│   ├── file_reader.rs
+│   ├── finite_context_model_image.rs
+│   ├── finite_context_model.rs
+│   ├── finite_context_model_words.rs
+│   ├── image_processor.rs
+│   ├── lib.rs
+│   ├── model_saver_loader.rs
+│   └── text_generator.rs
+├── tests
+│   ├── meta_results.csv
+│   ├── meta_results_debug.csv
+│   └── meta_results_release.csv
+└── visualizations
+    ├── avg_nrc_vs_mutation.png
+    ├── combined_heatmap.png
+    ├── complexity_profiles.png
+    ├── heatmap_top20_alpha.png
+    ├── heatmap_top20_k.png
+    ├── lineplot_nrc_time.png
+    ├── lineplot_total_time.png
+    ├── lineplot_train_time.png
+    ├── nrc_comparison_heatmap.png
+    ├── quantization_vs_images.png
+    ├── sequence1_chart.png
+    ├── sequence2_chart.png
+    ├── sequence3_chart.png
+    ├── sequence4_chart.png
+    ├── sequence5_chart.png
+    ├── sequence6_chart.png
+    ├── sequence7_chart.png
+    └── test_sequence_chart.png
+
+18 directories, 85 files
+```
