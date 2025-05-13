@@ -1,7 +1,7 @@
 extern crate argparse;
 extern crate rand;
 use std::collections::HashMap;
-use tai_first_project::{file_reader::FileReader, finite_context_model::FiniteContextModel,finite_context_model_words::FiniteContextModelWords, text_generator, *};
+use tai_projects::{file_reader::FileReader, finite_context_model::FiniteContextModel,finite_context_model_words::FiniteContextModelWords, text_generator, *};
 use argparse::{ArgumentParser, Store};
 
 fn main() {

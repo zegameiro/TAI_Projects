@@ -1,6 +1,6 @@
 extern crate argparse;
 
-use tai_first_project::{chart_generator::ChartGenerator, file_reader};
+use tai_projects::{chart_generator::ChartGenerator, file_reader};
 use argparse::{ArgumentParser, Store};
 
 fn main() {

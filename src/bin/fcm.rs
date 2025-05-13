@@ -2,7 +2,7 @@ extern crate argparse;
 extern crate serde;
 extern crate serde_json;
 
-use tai_first_project::{finite_context_model::FiniteContextModel, *};
+use tai_projects::{finite_context_model::FiniteContextModel, *};
 use argparse::{ArgumentParser, Store};
 use model_saver_loader::save_model;
 

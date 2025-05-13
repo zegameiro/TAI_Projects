@@ -6,9 +6,9 @@ use opencv::{
     imgcodecs,
     Result,
 };
-use tai_first_project::image_processor::{quantize_image, ImageProcessor};
+use tai_projects::image_processor::{quantize_image, ImageProcessor};
 
-use tai_first_project::finite_context_model_image::FiniteContextModelImage;
+use tai_projects::finite_context_model_image::FiniteContextModelImage;
 
 fn main() -> Result<()>{
     let mut alpha = 0.5;

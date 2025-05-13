@@ -1,4 +1,4 @@
-use tai_first_project::
+use tai_projects::
     {chart_generator::ChartGenerator, data_base_processor::{ComparisionResult, DataBaseProcessor}, file_reader, finite_context_model::FiniteContextModel
 };
 extern crate argparse;
