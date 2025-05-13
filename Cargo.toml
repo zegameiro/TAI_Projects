@@ -1,10 +1,10 @@
 [package]
-name = "tai_first_proj"
+name = "tai_projects"
 version = "0.1.0"
 edition = "2021"
 
 [lib]
-name = "tai_first_project"
+name = "tai_projects"
 path = "src/lib.rs"
 
 [dependencies]
@@ -17,4 +17,8 @@ bson = "2.0"
 opencv = "0.94.4"
 regex = "1.11.1"
 hound = "3.5.1"
-fft = "0.4.0"
+rustfft = "6.3.0"
+flate2 = "1.1.1"
+bzip2 = "0.5.2"
+xz2 = "0.1.7"
+zstd = "0.13.3"
