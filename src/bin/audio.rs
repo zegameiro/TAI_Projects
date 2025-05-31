@@ -88,7 +88,7 @@ fn main() {
     }
 
     let samples_freqs = audio_reader::extract_dominant_frequencies(sample_path.as_str(), segment_ms, top_n);
-    let query_std = flatten_freqs(samples_freqs);
+    let query_std = flatten_freqs(samples_freqs.get("dominant").unwrap().clone());
 
     let mut model: Option<FiniteContextModel> = None;
     if &compressor == "fcm" {
@@ -101,7 +101,9 @@ fn main() {
         model = Some(fcm);
     }
 
-    let mut scores: Vec<(String, f64)> = vec![];
+    let mut m_scores: Vec<(String, f64)> = vec![];
+    let mut lm_scores: Vec<(String, f64)> = vec![];
+    let mut freqs;
 
     for entry in fs::read_dir(musics_dir).expect("ERROR: Unable to read musics directory") {
         let entry = entry.unwrap();
@@ -110,26 +112,41 @@ fn main() {
             let fname = path.file_name().unwrap().to_string_lossy().to_string();
             println!("Processing file: {}", fname);
 
-            let freqs = audio_reader::extract_dominant_frequencies(path.to_str().unwrap(), segment_ms, top_n);
-            let music_str = flatten_freqs(freqs);
+            freqs = audio_reader::extract_dominant_frequencies(path.to_str().unwrap(), segment_ms, top_n);
+            let music_dom_str = flatten_freqs(freqs.get("dominant").unwrap().clone());
+            let musice_least_str = flatten_freqs(freqs.get("least_dominant").unwrap().clone());
             let ncd_score;
-            if &compressor == "fcm" {
-                ncd_score = ncd::compute_ncd_fcm(&query_std, &music_str, model.as_ref().unwrap())
-            } else {
-                ncd_score = ncd::compute_ncd(&query_std, &music_str, compressor.as_str());
-            }
-            println!("    NCD score for: {}", ncd_score);
+            let ncd_score_least;
 
-            scores.push((fname, ncd_score));
+            if &compressor == "fcm" {
+                ncd_score = ncd::compute_ncd_fcm(&query_std, &music_dom_str, model.as_ref().unwrap());
+                ncd_score_least = ncd::compute_ncd_fcm(&query_std, &musice_least_str, model.as_ref().unwrap());
+            } else {
+                ncd_score = ncd::compute_ncd(&query_std, &music_dom_str, compressor.as_str());
+                ncd_score_least = ncd::compute_ncd(&query_std, &musice_least_str, compressor.as_str());
+            }
+            println!("    NCD score (max_freqs): {}", ncd_score);
+
+            println!("    NCD score (least_freqs): {}", ncd_score_least);
+
+            m_scores.push((fname.clone(), ncd_score));
+            lm_scores.push((fname, ncd_score_least));
         }
     }
     
 
     // Sort scores by NCD score ascending
-    scores.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
+    m_scores.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
 
-    println!("\nTop {} closest music files:", top_k);
-    for (i, (name, score)) in scores.iter().take(top_k).enumerate() {
+    println!("\nTop {} closest music files (dominant frequencies):", top_k);
+    for (i, (name, score)) in m_scores.iter().take(top_k).enumerate() {
+        println!("{:>2}. {:<30} NCD: {:.4}", i + 1, name, score);
+    }
+
+    // Sort least dominant frequencies scores by NCD score ascending
+    lm_scores.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
+    println!("\nTop {} closest music files (least dominant frequencies):", top_k);
+    for (i, (name, score)) in lm_scores.iter().take(top_k).enumerate() {
         println!("{:>2}. {:<30} NCD: {:.4}", i + 1, name, score);
     }
 }
