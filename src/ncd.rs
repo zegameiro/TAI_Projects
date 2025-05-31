@@ -1,4 +1,4 @@
-use crate::compressors::{compress_bzip2_size, compress_gzip_size, compress_xz_size, compress_zstd_size};
+use crate::{compressors::{compress_bzip2_size, compress_gzip_size, compress_xz_size, compress_zstd_size}, finite_context_model::FiniteContextModel};
 
 fn get_compressed_size(data: &str, compressor: &str) -> usize {
     match compressor {
@@ -20,6 +20,20 @@ pub fn compute_ncd(
     let cxy = get_compressed_size(&format!("{}{}", x, y), compressor) as f64;
 
     let ncd = (cxy - cx.min(cy)) as f64 / cx.max(cy) as f64;
+
+    ncd
+}
+
+pub fn compute_ncd_fcm(
+    x: &str,
+    y: &str,
+    model: &FiniteContextModel
+) -> f64 {
+    let cx = model.calculate_information_content( x);
+    let cy = model.calculate_information_content( y);
+    let cxy = model.calculate_information_content(&format!("{}{}", x, y));
+
+    let ncd = (cxy - cx.min(cy)) / cx.max(cy);
 
     ncd
 }

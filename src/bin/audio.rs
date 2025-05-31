@@ -1,7 +1,7 @@
 use std::fs;
 use argparse::{ArgumentParser, Store};
 
-use tai_projects::{audio_reader, ncd};
+use tai_projects::{audio_reader, finite_context_model::FiniteContextModel, ncd};
 
 fn flatten_freqs(freqs: Vec<Vec<f32>>) -> String {
     freqs.iter()
@@ -46,7 +46,7 @@ fn main() {
 
         // Compressor
         argument_parser.refer(&mut compressor)
-            .add_option(&["-c"], Store, "Compressor to use (gz, bz2, xz, zstd) (default: gz)");
+            .add_option(&["-c"], Store, "Compressor to use (gz, bz2, xz, zstd, fcm) (default: gz)");
 
         argument_parser.parse_args_or_exit();
     }
@@ -82,13 +82,24 @@ fn main() {
     }
 
     // Check if the compressor is valid
-    if !["gz", "bz2", "xz", "zst"].contains(&compressor.as_str()) {
-        println!("ERROR: Compressor must be one of gz, bz2, xz, zst");
+    if !["gz", "bz2", "xz", "zst", "fcm"].contains(&compressor.as_str()) {
+        println!("ERROR: Compressor must be one of gz, bz2, xz, zst, fcm");
         return;
     }
 
     let samples_freqs = audio_reader::extract_dominant_frequencies(sample_path.as_str(), segment_ms, top_n);
     let query_std = flatten_freqs(samples_freqs);
+
+    let mut model: Option<FiniteContextModel> = None;
+    if &compressor == "fcm" {
+        let k: usize = 8;
+        let alpha = 0.5;
+        let mut fcm = FiniteContextModel::new(k, alpha);
+        for char in query_std.chars() {
+            fcm.train_char(char);
+        }
+        model = Some(fcm);
+    }
 
     let mut scores: Vec<(String, f64)> = vec![];
 
@@ -101,13 +112,18 @@ fn main() {
 
             let freqs = audio_reader::extract_dominant_frequencies(path.to_str().unwrap(), segment_ms, top_n);
             let music_str = flatten_freqs(freqs);
-
-            let ncd_score = ncd::compute_ncd(&query_std, &music_str, compressor.as_str());
+            let ncd_score;
+            if &compressor == "fcm" {
+                ncd_score = ncd::compute_ncd_fcm(&query_std, &music_str, model.as_ref().unwrap())
+            } else {
+                ncd_score = ncd::compute_ncd(&query_std, &music_str, compressor.as_str());
+            }
             println!("    NCD score for: {}", ncd_score);
 
             scores.push((fname, ncd_score));
         }
     }
+    
 
     // Sort scores by NCD score ascending
     scores.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
