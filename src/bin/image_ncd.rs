@@ -1,6 +1,6 @@
 use argparse::{ArgumentParser, Store};
 use opencv::{
-    imgcodecs, imgproc, prelude::*, Result
+    imgcodecs, prelude::*, Result
 };
 use tai_projects::{image_processor::{quantize_image, ImageProcessor}, ncd::compute_ncd};
 
@@ -38,7 +38,7 @@ fn main() -> Result<()>{
             .add_option(&["-l"], Store, "Number of levels to quantize images (default: 255)");
 
         argument_parser.refer(&mut compressor)
-            .add_option(&["-c", "--compressor"], Store, "Compressor to use: gz, bz2, xz, zst (optional)");
+            .add_option(&["-c", "--compressor"], Store, "Compressor to use: gz, bz2, xz, zstd, lzma (optional)");
 
 
         argument_parser.parse_args_or_exit();

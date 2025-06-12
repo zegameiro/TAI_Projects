@@ -5,7 +5,7 @@ mkdir -p image_results
 > "$output_file"
 
 # Define compressors to test
-compressors=("gz" "bz2" "xz" "zst")
+compressors=("gz" "bz2" "xz" "zstd" "lzma")
 declare -A totals  # associative array to hold total counts
 
 # Initialize totals
