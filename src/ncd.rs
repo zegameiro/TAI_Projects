@@ -1,4 +1,4 @@
-use crate::{compressors::{compress_bzip2_size, compress_gzip_size, compress_xz_size, compress_zstd_size}, finite_context_model::FiniteContextModel};
+use crate::{compressors::{compress_bzip2_size, compress_gzip_size, compress_lzma_size, compress_xz_size, compress_zstd_size}, finite_context_model::FiniteContextModel};
 
 fn get_compressed_size(data: &str, compressor: &str) -> usize {
     match compressor {
@@ -6,6 +6,7 @@ fn get_compressed_size(data: &str, compressor: &str) -> usize {
         "bz2" => compress_bzip2_size(data),
         "xz" => compress_xz_size(data),
         "zstd" => compress_zstd_size(data),
+        "lzma" => compress_lzma_size(data),
         _ => panic!("Unsupported compressor: {}", compressor),
     }
 }

@@ -7,6 +7,7 @@ use zstd::stream::encode_all;
 use std::io::Cursor;
 use std::io::Write;
 
+
 pub fn compress_gzip_size(data: &str) -> usize {
     let mut encoder = GzEncoder::new(Vec::new(), GzipCompression::default());
     encoder.write_all(data.as_bytes()).unwrap();
@@ -30,6 +31,13 @@ pub fn compress_xz_size(data: &str) -> usize {
 
 pub fn compress_zstd_size(data: &str) -> usize {
     let compressed = encode_all(Cursor::new(data), 0).unwrap();
+    compressed.len()
+}
+
+pub fn compress_lzma_size(data: &str) -> usize {
+    let mut encoder = XzEncoder::new(Vec::new(), 6); // Compression level 6 (0–9)
+    encoder.write_all(data.as_bytes()).unwrap();
+    let compressed = encoder.finish().unwrap();
     compressed.len()
 }
 
