@@ -2,6 +2,7 @@ use flate2::write::GzEncoder;
 use flate2::Compression as GzipCompression;
 use bzip2::write::BzEncoder;
 use bzip2::Compression as BzipCompression;
+use lzma_rs::lzma_compress;
 use xz2::write::XzEncoder;
 use zstd::stream::encode_all;
 use std::io::Cursor;
@@ -35,9 +36,8 @@ pub fn compress_zstd_size(data: &str) -> usize {
 }
 
 pub fn compress_lzma_size(data: &str) -> usize {
-    let mut encoder = XzEncoder::new(Vec::new(), 6); // Compression level 6 (0–9)
-    encoder.write_all(data.as_bytes()).unwrap();
-    let compressed = encoder.finish().unwrap();
+    let mut compressed = Vec::new();
+    lzma_compress(&mut Cursor::new(data.as_bytes()), &mut compressed).unwrap();
     compressed.len()
 }
 
