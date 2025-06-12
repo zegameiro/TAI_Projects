@@ -13,10 +13,12 @@ fn flatten_freqs(freqs: Vec<Vec<f32>>) -> String {
 fn main() {
     let mut sample_path = "".to_string();
     let mut musics_dir = "".to_string();
-    let mut segment_ms = 500; // 0.5 seconds
+    let mut segment_ms = 1000; // 1 seconds
     let mut top_n = 10;
     let mut top_k = 4;
     let mut compressor = "gz".to_string();
+    let mut start_ms = 0;
+    let mut end_ms = 0;
 
     {
         let mut argument_parser: ArgumentParser<'_> = ArgumentParser::new();
@@ -47,6 +49,14 @@ fn main() {
         // Compressor
         argument_parser.refer(&mut compressor)
             .add_option(&["-c"], Store, "Compressor to use (gz, bz2, xz, zstd, fcm) (default: gz)");
+
+        // Start time of the sample in milliseconds
+        argument_parser.refer(&mut start_ms)
+            .add_option(&["--start"], Store, "Start time (in milliseconds) of the sample segment");
+
+        // End time of the sample in milliseconds
+        argument_parser.refer(&mut end_ms)
+            .add_option(&["--end"], Store, "End time (in milliseconds) of the sample segment");
 
         argument_parser.parse_args_or_exit();
     }
@@ -87,7 +97,19 @@ fn main() {
         return;
     }
 
-    let samples_freqs = audio_reader::extract_dominant_frequencies(sample_path.as_str(), segment_ms, top_n);
+    // Check if the start time is greater than the end time
+    if  end_ms != 0 && start_ms != 0 && end_ms <= start_ms {
+        println!("ERROR: End time must be greater than start time");
+        return;
+    }
+
+    let samples_freqs = audio_reader::extract_dominant_frequencies(
+        sample_path.as_str(), 
+        segment_ms, 
+        top_n,
+        Some(start_ms),
+        Some(end_ms)
+    );
     let query_std = flatten_freqs(samples_freqs.get("dominant").unwrap().clone());
 
     let mut model: Option<FiniteContextModel> = None;
@@ -112,7 +134,7 @@ fn main() {
             let fname = path.file_name().unwrap().to_string_lossy().to_string();
             println!("Processing file: {}", fname);
 
-            freqs = audio_reader::extract_dominant_frequencies(path.to_str().unwrap(), segment_ms, top_n);
+            freqs = audio_reader::extract_dominant_frequencies(path.to_str().unwrap(), segment_ms, top_n, None, None);
             let music_dom_str = flatten_freqs(freqs.get("dominant").unwrap().clone());
             let musice_least_str = flatten_freqs(freqs.get("least_dominant").unwrap().clone());
             let ncd_score;
@@ -127,7 +149,7 @@ fn main() {
             }
             println!("    NCD score (max_freqs): {}", ncd_score);
 
-            println!("    NCD score (least_freqs): {}", ncd_score_least);
+            println!("    NCD score (least_freqs): {}\n", ncd_score_least);
 
             m_scores.push((fname.clone(), ncd_score));
             lm_scores.push((fname, ncd_score_least));
@@ -147,6 +169,6 @@ fn main() {
     lm_scores.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
     println!("\nTop {} closest music files (least dominant frequencies):", top_k);
     for (i, (name, score)) in lm_scores.iter().take(top_k).enumerate() {
-        println!("{:>2}. {:<30} NCD: {:.4}", i + 1, name, score);
+        println!("{:>2}. {:<70} NCD: {:.4}", i + 1, name, score);
     }
 }

@@ -2,13 +2,35 @@ use hound::WavReader;
 use rustfft::{FftPlanner, num_complex::Complex};
 use std::collections::HashMap;
 
-pub fn extract_dominant_frequencies(wav_path: &str, segment_ms: u32, top_n: usize) -> HashMap<String ,Vec<Vec<f32>>> {
+pub fn extract_dominant_frequencies(
+    wav_path: &str, 
+    segment_ms: u32, 
+    top_n: usize,
+    start_ms: Option<u32>,
+    end_ms: Option<u32>
+) -> HashMap<String ,Vec<Vec<f32>>> {
     let mut reader = WavReader::open(wav_path).expect("ERROR: Unable to open WAV file");
     let spec = reader.spec();
     let sample_rate = spec.sample_rate;
-    let samples: Vec<f32> = reader.samples::<i16>()
+    let all_samples: Vec<f32> = reader.samples::<i16>()
         .map(|s| s.unwrap() as f32)
         .collect();
+    
+    let start_sample = (spec.sample_rate as f32 * start_ms.unwrap_or(0) as f32 / 1000.0) as usize;
+    let end_sample = (spec.sample_rate as f32 * end_ms.unwrap_or(0) as f32 / 1000.0) as usize;
+
+    if end_sample > all_samples.len() {
+        panic!("ERROR: End time exceeds the length of the audio file");
+    }
+
+    let samples: &[f32];
+
+    if (start_ms.is_none() && end_ms.is_none()) || (start_ms == Some(0) && end_ms == Some(0)) {
+        println!("WARNING: No start or end time provided, processing the entire audio file.");
+        samples = &all_samples;
+    }  else {
+        samples = &all_samples[start_sample..end_sample];
+    }
 
     // Calculate the number of samples per segment
     let samples_per_segment = (sample_rate as f32 * segment_ms as f32 / 1000.0) as usize;
