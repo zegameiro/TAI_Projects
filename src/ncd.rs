@@ -5,7 +5,7 @@ fn get_compressed_size(data: &str, compressor: &str) -> usize {
         "gz" => compress_gzip_size(data),
         "bz2" => compress_bzip2_size(data),
         "xz" => compress_xz_size(data),
-        "zst" => compress_zstd_size(data),
+        "zstd" => compress_zstd_size(data),
         _ => panic!("Unsupported compressor: {}", compressor),
     }
 }

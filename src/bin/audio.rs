@@ -82,8 +82,8 @@ fn main() {
     }
 
     // Check if the compressor is valid
-    if !["gz", "bz2", "xz", "zst", "fcm"].contains(&compressor.as_str()) {
-        println!("ERROR: Compressor must be one of gz, bz2, xz, zst, fcm");
+    if !["gz", "bz2", "xz", "zstd", "fcm"].contains(&compressor.as_str()) {
+        println!("ERROR: Compressor must be one of gz, bz2, xz, zstd, fcm");
         return;
     }
 
