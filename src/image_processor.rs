@@ -145,7 +145,7 @@ impl ImageProcessor{
         quantize_image(&mut ref_image, levels);
 
         let mut model_cy = FiniteContextModelImage::new(alpha);
-        model_cy.train_mat_image(ref_image.clone(), k); // ✅ Train the model
+        model_cy.train_mat_image(ref_image.clone(), k);
         let c_y = model_cy.calculate_information_content(&ref_image, k);
 
         for file in &self.images_list {
@@ -153,7 +153,7 @@ impl ImageProcessor{
             quantize_image(&mut image, levels);
 
             let mut model_cx = FiniteContextModelImage::new(alpha);
-            model_cx.train_mat_image(image.clone(), k); // ✅ Train the model
+            model_cx.train_mat_image(image.clone(), k);
             let c_x = model_cx.calculate_information_content(&image, k);
 
             let mut images = opencv::core::Vector::<Mat>::new();
@@ -164,7 +164,7 @@ impl ImageProcessor{
             opencv::core::vconcat(&images, &mut joint_image).unwrap();
 
             let mut model_cxy = FiniteContextModelImage::new(alpha);
-            model_cxy.train_mat_image(joint_image.clone(), k); // ✅ Train the model
+            model_cxy.train_mat_image(joint_image.clone(), k);
             let c_xy = model_cxy.calculate_information_content(&joint_image, k);
 
             let ncd = if c_x > 0.0 && c_y > 0.0 {
