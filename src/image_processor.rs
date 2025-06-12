@@ -5,7 +5,7 @@ use std::{collections::HashMap, fs};
 use crate::finite_context_model_image::FiniteContextModelImage;
 
 pub struct ImageProcessor {
-    images_list: Vec<String>
+   pub images_list: Vec<String>
 }
 
 
@@ -137,6 +137,48 @@ impl ImageProcessor{
 
         nrc_scores
     }
+
+    pub fn compute_ncd(&self, alpha: f64, k: u8, levels: i32, reference_file: &String) -> HashMap<String, f64> {
+        let mut ncd_scores: HashMap<String, f64> = HashMap::new();
+
+        let mut ref_image = imgcodecs::imread(reference_file.as_str(), imgcodecs::IMREAD_GRAYSCALE).unwrap();
+        quantize_image(&mut ref_image, levels);
+
+        let mut model_cy = FiniteContextModelImage::new(alpha);
+        model_cy.train_mat_image(ref_image.clone(), k); // ✅ Train the model
+        let c_y = model_cy.calculate_information_content(&ref_image, k);
+
+        for file in &self.images_list {
+            let mut image = imgcodecs::imread(file.as_str(), imgcodecs::IMREAD_GRAYSCALE).unwrap();
+            quantize_image(&mut image, levels);
+
+            let mut model_cx = FiniteContextModelImage::new(alpha);
+            model_cx.train_mat_image(image.clone(), k); // ✅ Train the model
+            let c_x = model_cx.calculate_information_content(&image, k);
+
+            let mut images = opencv::core::Vector::<Mat>::new();
+            images.push(ref_image.clone());
+            images.push(image.clone());
+
+            let mut joint_image = Mat::default();
+            opencv::core::vconcat(&images, &mut joint_image).unwrap();
+
+            let mut model_cxy = FiniteContextModelImage::new(alpha);
+            model_cxy.train_mat_image(joint_image.clone(), k); // ✅ Train the model
+            let c_xy = model_cxy.calculate_information_content(&joint_image, k);
+
+            let ncd = if c_x > 0.0 && c_y > 0.0 {
+                (c_xy - c_x.min(c_y)) / c_x.max(c_y)
+            } else {
+                0.0
+            };
+
+            ncd_scores.insert(file.clone(), ncd);
+        }
+
+        ncd_scores
+    }
+
 }
 
 pub fn quantize_image(img: &mut Mat,levels: i32){
