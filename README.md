@@ -268,6 +268,35 @@ The results obtained can be seen throuhg the following image:
 
 Where it is possible to observe that the compressors **gzip**, **bzip2**, **zstd** and **xz** manage to always find the most similar song being the song from where the sample was generated. However for the compressor **lzma**, it did not have a good accuracy rate, he can see that he manage to find the correct most similiar song on **50%** of the samples, where in the other half it failed.
 
+#### Experiment to identify songs from the same artist
+
+In this experiment, we aimed to see of our solution could identify sound tracks from the same artist. For this, we selected the song track `hitchin_a_ride_green_day.wav` and created a sample of 20 seconds from it. Then we compared the outputs of our program to see if all of the songs that add the same artist (**Green Day**) appeared in the top 4 most similar songs. We tested this for all the compressors available, and the results can be seen in the following table:
+
+| Compressor | Rank | Most Similar Song | NCD Score |
+| :--------: | :--: | :---------------: | :-------: |
+| **gzip** | 1 | hitchin_a_ride_green_day.wav | 0.9201 |
+| **gzip** | 2 | bounce_System_of_a_down.wav | 0.9842 |
+| **gzip** | 3 | scattered_green_day.wav | 0.9857 |
+| **gzip** | 4 | aint_that_a_kick_in_the_head_dean_martin.wav | 0.9859 |
+| **bzip2** | 1 | hitchin_a_ride_green_day.wav | 0.9281 |
+| **bzip2** | 2 | bounce_System_of_a_down.wav | 0.9644 |
+| **bzip2** | 3 | violent_pornography_system_of_a_down.wav | 0.9688 |
+| **bzip2** | 4 | american_idiot_green_day.wav | 0.9691|
+| **xz** | 1 | hitchin_a_ride_green_day.wav | 0.9010 |
+| **xz** | 2 | humble._kendrick_lamar.wav | 0.9301 |
+| **xz** | 3 | bounce_System_of_a_down.wav | 0.9434 |
+| **xz** | 4 | everlasting_polock.wav | 0.9442 |
+| **zstd** | 1 | hitchin_a_ride_green_day.wav | 0.9288 |
+| **zstd** | 2 | bounce_System_of_a_down.wav | 0.9808 |
+| **zstd** | 3 | love_kendrick_lamar.wav | 0.9830 |
+| **zstd** | 4 | the_still_sea_the_sweetgreens.wav | 0.9833 |
+| **lzma** | 1 | bounce_System_of_a_down.wav | 0.9942 |
+| **lzma** | 2 | aint_that_a_kick_in_the_head_dean_martin.wav | 0.9956 |
+| **lzma** | 3 | na_na_na_nada_capitao_fausto.wav | 0.9958 |
+| **lzma** | 4 | american_idiot.wav | 0.9970 |
+
+The experiment demonstrated that using NCD with general-purposed compressors can partially identify songs by the same artist or album. In most of the tests, the original sample (`hitchin_a_ride_green_day.wav`) was correctly ranked as the most similar. Other Green Day tracks, such as `scattered_green_day.wav` and `american_idiot_green_day.wav`, appeared in the top 4 for some compressors (gzip and bzip2). However, several unrelated tracks, some from different genres like jazz or rap, also appeared high in the rankings, suggesting that compression-based similarity captures structural patterns but lacks genre awareness.
+
 #### Experiment with images
 
 As we had already experimented with images in our previous work, we decided to extend this approach by applying NCD (Normalized Compression Distance) using various compressors. We used the same dataset as in the second experiment, which contains 41 subjects, each with 10 grayscale images. For each subject, we selected the first image and compared it to all images in the dataset using NCD with multiple compressors: **gzip**, **bzip2**, **zstd**, **xz**, and **lzma**. The images were loaded in grayscale using OpenCV and preprocessed with quantization. For each comparison, we compressed both individual images and their concatenation, then computed the NCD. To be considered a correct match, the top 10 closest images (based on NCD) must all belong to the same subject. Since there are 41 subjects and each should yield 10 correct matches, the maximum score for each compressor is 410.
