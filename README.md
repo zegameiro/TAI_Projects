@@ -26,6 +26,7 @@
     - [Experiment with noisy samples](#experiment-with-noisy-samples)
       - [Experiment the effect of noisy on NCD values](#experiment-the-effect-of-noisy-on-ncd-values)
     - [Experiment with different compressors and different sizes of samples](#experiment-with-different-compressors-and-different-sizes-of-samples)
+    - [Experiment to identify songs from the same artist](#experiment-to-identify-songs-from-the-same-artist)
     - [Experiment with images](#experiment-with-images)
     - [Experiment with FCM](#experiment-with-fcm)
   - [Important Notes](#important-notes-2)
