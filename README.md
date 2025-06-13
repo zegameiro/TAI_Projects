@@ -256,9 +256,37 @@ Where it is possible to observe that the compressors **gzip**, **bzip2**, **zstd
 
 #### Experiment with FCM
 
-### Conclusions (só se for necessário)
-
 ### Compilation and Execution
+
+To compile the project, you need to run the following command at the root of the project:
+```bash
+cargo build --release
+```
+After this, executables will be available in the `target/release` folder. We suggest compiling with the flag `--release` to optimize the performance of the program, as it can be quite slow otherwise.
+To run the main program for this project, you need to run the following command at the root of the project:
+
+```bash
+./target/release/metaClass -d {db_directory} -s {sample_audio_file} --start {start_time} --end {end_time}
+```
+
+The following arguments can/need to be passed:
+```bash
+Usage:
+  ./target/release/audio [OPTIONS]
+
+Algorithmic Theory of Information Third Project
+
+Optional arguments:
+  -h,--help      Show this help message and exit
+  -s             Path to the sample music file (it must be a .wav file and it is required to be passed) 
+  -d             Path to the directory containing music files (all the musics must be .wav files and it is required to be passed)
+  -l             Segment length in milliseconds (default: 500ms)
+  -n             Top N frequencies to extract (default: 10)
+  -k             Top K closest music files to the sample (default: 4)
+  -c             Compressor to use (gz, bz2, xz, zstd, lzma) (default: gz)
+  --start START  Start time (in milliseconds) of the sample segment (required)
+  --end END      End time (in milliseconds) of the sample segment (required)
+```
 
 ## Authors
 
