@@ -211,6 +211,38 @@ Brown, Pink, Green and White noise were also used to test the robustness of the 
 
 #### Experiment with noisy samples
 
+Original music tracks were used to manually create 20-second audio samples, in Audacity. The musics were selected to cover a diverse range of musical styles, ensuring that at least one sample represented each genre. For each selected song, the following variants were created:
+- Clean sample (no added noise)
+- White noise
+- Pink noise
+- Brown noise
+- Green noise
+
+For each of the samples created, the NCD was calculated between the sample and a reference dataset containing all the original songs, with the goal to determine if the system could correctly identify the most similar track. This procedure was repeated for the compression algorithms *gzip*, *bzip2*, *xz*, *zstd* and *fcm*.
+
+![noisy_chart](tests/noise/noisy_chart.png)
+
+The bar chart shows the percentage of cases in which the most similar sample identified by the NCD-based method corresponded to the original source, across different types of added noise and grouped by compression algorithm.
+
+##### Experiment the effect of noisy on NCD values
+
+A separate test was conducted to investigate whether the loudness of the original music influenced the effect of added noise on the NCD score. The hypothesis was that quieter songs might be more affected by added noise, as the noise becomes more perceptible relative to the audio signal. For this, four songs were selected
+
+**Louder tracks**
+
+- "hitchin_a_ride_green_day" (red)
+- "toxicity_system_of_a_down" (orange)
+
+**Quieter tracks**
+- "the_still_sea_the_sweetgreens" (green)
+- "the_four_seasons_baroque_festival_orchestra" (blue)
+
+The figure below shows the NCD scores for each song across the noise types.
+
+![noise_effect](tests/noise/ncd_noise_effect.png)
+
+The results do not show a clear distinction between loud and quiet tracks (for example, the blue and green lines - quieter songs - do not consistently have higher NCD scores than the red and orange lines - louder songs. So, no conclusive evidence was found that louder or quieter tracks are more or less affected by noise in terms of NCD similarity.
+
 #### Experiment with different compressors and different sizes of samples
 
 For this experiment our group decided to execute our solution, where the samples were created based on all of the available songs, but with different sizes. This means that for each song 3 samples were created, one with 20s, another with 40s and the last one with 60s. Then with for each sample created we used all the compressors available, meaning that for each sample created, the program was executed 5 times one for each compressor (**gzip**, **bzip2**, **zstd**, **xz** and **lzma**). In total our program executed 450 times, 15 times per sample.
