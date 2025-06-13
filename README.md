@@ -256,6 +256,13 @@ Where it is possible to observe that the compressors **gzip**, **bzip2**, **zstd
 
 #### Experiment with FCM
 
+### Important Notes
+
+- The document relative to the project can be found in this [location](/docs/assignment3/trab3.pdf).
+- The poster developed for the project that describes our solution can be found in this [location](/docs/assignment3/TAI_Poster_3rd_Project.pdf)
+
+![Poster](/docs/assignment3/TAI_Poster_3rd_Project.png)
+
 ### Compilation and Execution
 
 To compile the project, you need to run the following command at the root of the project:
@@ -295,113 +302,3 @@ Optional arguments:
 | Guilherme Amorim | 1/3 |
 | José Gameiro | 1/3 |
 | Tomás Victal | 1/3 |
-
-## Project Structure
-
-```bash
-.
-├── Cargo.toml
-├── data
-│   ├── db.txt
-│   ├── generated
-│   │   ├── db_test.txt
-│   │   ├── meta_varying_mutation_0percent.txt
-│   │   ├── meta_varying_mutation_10percent.txt
-│   │   ├── meta_varying_mutation_15percent.txt
-│   │   ├── meta_varying_mutation_1percent.txt
-│   │   ├── meta_varying_mutation_20percent.txt
-│   │   ├── meta_varying_mutation_25percent.txt
-│   │   └── meta_varying_mutation_5percent.txt
-│   ├── meta.txt
-│   └── sequences
-│       ├── sequence1.txt
-│       ├── sequence2.txt
-│       ├── sequence3.txt
-│       ├── sequence4.txt
-│       ├── sequence5.txt
-│       ├── sequence6.txt
-│       ├── sequence7.txt
-│       └── test_sequence.txt
-├── docs
-│   ├── assignment_1
-│   │   ├── report_107162_108840_109018.pdf
-│   │   └── TAI_WORK_1_2024_2025_RC.pdf
-│   └── assignment_2
-│       ├── tai_demo_2nd_assignment.mp4
-│       ├── TAI_Report_2.pdf
-│       └── TAI_WORK_2_2024_2025_RC.pdf
-├── LICENSE
-├── README.md
-├── scripts
-│   ├── bash
-│   │   ├── comparative_nrc_results.json
-│   │   ├── fcm
-│   │   │   ├── fcm1.sh
-│   │   │   ├── fcm2.sh
-│   │   │   ├── fcm3.sh
-│   │   │   ├── fcm4.sh
-│   │   │   └── fcm5.sh
-│   │   ├── generate_meta.sh
-│   │   ├── generator
-│   │   │   ├── generator1.sh
-│   │   │   ├── generator2_mode_words.sh
-│   │   │   ├── generator2.sh
-│   │   │   ├── generator3.sh
-│   │   │   ├── generator4.sh
-│   │   │   └── generator5.sh
-│   │   ├── gto
-│   │   │   └── generate_meta.sh
-│   │   ├── image_results
-│   │   │   ├── samples_images_quant.sh
-│   │   │   └── samples_images.sh
-│   │   └── run_meta.sh
-│   └── python
-│       ├── compare_execution_time.py
-│       ├── compare_image_quantization.py
-│       ├── compare_mutations.py
-│       ├── compare_nrc_scores.py
-│       ├── generate_heatmap.py
-│       └── requirements.txt
-├── src
-│   ├── bin
-│   │   ├── charts.rs
-│   │   ├── fcm.rs
-│   │   ├── generator.rs
-│   │   ├── image.rs
-│   │   └── metaClass.rs
-│   ├── chart_generator.rs
-│   ├── data_base_processor.rs
-│   ├── file_reader.rs
-│   ├── finite_context_model_image.rs
-│   ├── finite_context_model.rs
-│   ├── finite_context_model_words.rs
-│   ├── image_processor.rs
-│   ├── lib.rs
-│   ├── model_saver_loader.rs
-│   └── text_generator.rs
-├── tests
-│   ├── meta_results.csv
-│   ├── meta_results_debug.csv
-│   └── meta_results_release.csv
-└── visualizations
-    ├── avg_nrc_vs_mutation.png
-    ├── combined_heatmap.png
-    ├── complexity_profiles.png
-    ├── heatmap_top20_alpha.png
-    ├── heatmap_top20_k.png
-    ├── lineplot_nrc_time.png
-    ├── lineplot_total_time.png
-    ├── lineplot_train_time.png
-    ├── nrc_comparison_heatmap.png
-    ├── quantization_vs_images.png
-    ├── sequence1_chart.png
-    ├── sequence2_chart.png
-    ├── sequence3_chart.png
-    ├── sequence4_chart.png
-    ├── sequence5_chart.png
-    ├── sequence6_chart.png
-    ├── sequence7_chart.png
-    └── test_sequence_chart.png
-
-18 directories, 85 files
-```
