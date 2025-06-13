@@ -172,6 +172,52 @@ Optional arguments:
 - The demo for the project can be found in this [location](/docs/assignment_2/tai_demo_2nd_assignment.mp4).
 - All the visualizations created for this project are in the [visualizations folder](/visualizations/).
 
+## Third Project
+
+This project explores the use of Normalized Compression Distance (NCD) for automatic music identification. The main goal is to identify music samples by comparing them to a database of full music tracks using general-purpose compression algorithms such as **gzip**, **bzip2**, **zstd** and **lzma**. The method relies on approximating algorithmic information distance through compression, with the objective of finding the music in the database most similar to a given sample. Additional testing includes the use of noisy samples to evaluate the robustness of our approach.
+
+### Implementation
+
+The implementation is organized into several core components:
+
+#### 1. Audio Feature Extraction
+
+The `audio_reader.rs` module extracts the most signficant frequencies from `.wav` files. Each audio is divided into overlapping segments (like with 1 second windows), and for each segment, a Fast Fourier Transform (FFT) is applied to extract the top-N dominant and least dominant frequencies. This results in a time-series "signature" of frequency values for each audio file.
+
+#### 2. Frequency Flattening
+
+These frequency vectors are then flattened into space-separated strings to prepare them for compression based comparison. This string representation is used to simulate a text-based representation of the audio data that compression algorithms can process.
+
+#### 3. Compression and NCD Calculation
+
+The `compressors.rs` module provides wrappers around standard compressors like **gzip**, **bzip2**, **zstd**, and **lzma** to calculate the compressed size of a frequency string. Using these sizes, `ncd.rs` computes the NCD using the formula:
+```mathematica
+NCD(x, y) = (C(xy) - min(C(x), C(y))) / max(C(x), C(y))
+```
+
+This is done for both dominant and least dominant frequency strings allowing comparison on multiple aspects of the audio.
+An alternative method is also supported using a Finite Context Model (FCM), where the information content of each string is computed based on a trained probabilistic model, instead of using external compressors.
+
+#### 4. Music Matching
+
+In `audio.rs`, the system reads a sample `.wav` file and compares it against all `.wav` files in a specified music database. It computes the NCD between the sample and each music track and ranks them by similarity (lowest NCD first). The top-K closest matches are displayed for both dominant and least dominant frequencies.
+
+### Experimental Analysis
+
+#### Data used
+
+#### Experiment with noisy samples
+
+#### Experiment with different compressors and different sizes of samples
+
+#### Experiment with images
+
+#### Experiment with FCM
+
+### Conclusions (só se for necessário)
+
+### Compilation and Execution
+
 ## Authors
 
 | Author | Percentage |
