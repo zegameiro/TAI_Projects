@@ -48,7 +48,7 @@ fn main() {
 
         // Compressor
         argument_parser.refer(&mut compressor)
-            .add_option(&["-c"], Store, "Compressor to use (gz, bz2, xz, zstd, fcm) (default: gz)");
+            .add_option(&["-c"], Store, "Compressor to use (gz, bz2, xz, zstd, lzma) (default: gz)");
 
         // Start time of the sample in milliseconds
         argument_parser.refer(&mut start_ms)
@@ -92,8 +92,8 @@ fn main() {
     }
 
     // Check if the compressor is valid
-    if !["gz", "bz2", "xz", "zstd", "fcm"].contains(&compressor.as_str()) {
-        println!("ERROR: Compressor must be one of gz, bz2, xz, zstd, fcm");
+    if !["gz", "bz2", "xz", "zstd", "lzma"].contains(&compressor.as_str()) {
+        println!("ERROR: Compressor must be one of gz, bz2, xz, zstd, lzma");
         return;
     }
 
@@ -132,7 +132,7 @@ fn main() {
         let path = entry.path();
         if path.extension().and_then(|s| s.to_str()) == Some("wav") {
             let fname = path.file_name().unwrap().to_string_lossy().to_string();
-            println!("Processing file: {}", fname);
+            // println!("Processing file: {}", fname);
 
             freqs = audio_reader::extract_dominant_frequencies(path.to_str().unwrap(), segment_ms, top_n, None, None);
             let music_dom_str = flatten_freqs(freqs.get("dominant").unwrap().clone());
@@ -147,9 +147,6 @@ fn main() {
                 ncd_score = ncd::compute_ncd(&query_std, &music_dom_str, compressor.as_str());
                 ncd_score_least = ncd::compute_ncd(&query_std, &musice_least_str, compressor.as_str());
             }
-            println!("    NCD score (max_freqs): {}", ncd_score);
-
-            println!("    NCD score (least_freqs): {}\n", ncd_score_least);
 
             m_scores.push((fname.clone(), ncd_score));
             lm_scores.push((fname, ncd_score_least));
@@ -171,4 +168,5 @@ fn main() {
     for (i, (name, score)) in lm_scores.iter().take(top_k).enumerate() {
         println!("{:>2}. {:<70} NCD: {:.4}", i + 1, name, score);
     }
+    println!("\nDone! ================================================\n");
 }
