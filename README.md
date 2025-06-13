@@ -206,9 +206,19 @@ In `audio.rs`, the system reads a sample `.wav` file and compares it against all
 
 #### Data used
 
+In terms of data, our experiments utilized a collection of `.wav` files from various music genres, including pop, punk-rock, hard-rock, grunge, rap, fado, pimba, classical, and jazz. In total, 30 music tracks were used and are available in the [music folder](./music/). 
+Brown, Pink, Green and White noise were also used to test the robustness of the approach against noisy samples.
+
 #### Experiment with noisy samples
 
 #### Experiment with different compressors and different sizes of samples
+
+For this experiment our group decided to execute our solution, where the samples were created based on all of the available songs, but with different sizes. This means that for each song 3 samples were created, one with 20s, another with 40s and the last one with 60s. Then with for each sample created we used all the compressors available, meaning that for each sample created, the program was executed 5 times one for each compressor (**gzip**, **bzip2**, **zstd**, **xz** and **lzma**). In total our program executed 450 times, 15 times per sample.
+The results obtained can be seen throuhg the following image:
+
+![Compressor Accuracy](./visualizations/compressor_accuracy.png)
+
+Where it is possible to observe that the compressors **gzip**, **bzip2**, **zstd** and **xz** manage to always find the most similar song being the song from where the sample was generated. However for the compressor **lzma**, it did not have a good accuracy rate, he can see that he manage to find the correct most similiar song on **50%** of the samples, where in the other half it failed.
 
 #### Experiment with images
 
