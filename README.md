@@ -15,8 +15,22 @@
   - [Executables](#executables)
   - [Compiling and executing](#compiling-and-executing)
   - [Important Notes](#important-notes-1)
+- [Third Project](#third-project)
+  - [Implementation](#implementation)
+    - [Audio Feature Extraction](#1-audio-feature-extraction)
+    - [Frequency Flattening](#2-frequency-flattening)
+    - [Compression and NCD Calculation](#3-compression-and-ncd-calculation)
+    - [Music Matching](#4-music-matching)
+  - [Experimental Analysis](#experimental-analysis)
+    - [Data used](#data-used)
+    - [Experiment with noisy samples](#experiment-with-noisy-samples)
+      - [Experiment the effect of noisy on NCD values](#experiment-the-effect-of-noisy-on-ncd-values)
+    - [Experiment with different compressors and different sizes of samples](#experiment-with-different-compressors-and-different-sizes-of-samples)
+    - [Experiment with images](#experiment-with-images)
+    - [Experiment with FCM](#experiment-with-fcm)
+  - [Important Notes](#important-notes-2)
+  - [Compilation and Execution](#compilation-and-execution)
 - [Authors](#authors)
-- [Project Structure](#project-structure)
 
 ---
 
@@ -171,6 +185,8 @@ Optional arguments:
 - The report can be found in this [location](/docs/assignment_2/TAI_Report_2.pdf).
 - The demo for the project can be found in this [location](/docs/assignment_2/tai_demo_2nd_assignment.mp4).
 - All the visualizations created for this project are in the [visualizations folder](/visualizations/).
+
+---
 
 ## Third Project
 
